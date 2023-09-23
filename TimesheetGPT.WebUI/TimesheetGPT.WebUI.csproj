@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-TimesheetGPT.WebUI-f72d98b5-4902-4ced-bf99-37fba899ba41</UserSecretsId>
+    <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0-rc.1.23421.29" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0-rc.1.23421.29" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.13.4" />
+    <PackageReference Include="Microsoft.Identity.Web.GraphServiceClient" Version="2.13.4" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.13.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimesheetGPT.Application\TimesheetGPT.Application.csproj" />
+  </ItemGroup>
+
+</Project>

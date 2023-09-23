@@ -1,0 +1,45 @@
+﻿@page "/timesheets"
+
+@using Microsoft.Identity.Web
+@using Microsoft.Graph
+@using TimesheetGPT.Application
+@inject GraphServiceClient GraphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+
+<h1>Generate Timesheet</h1>
+
+@if (_emails == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <ul>
+        @foreach (var email in _emails.Where(string.IsNullOrEmpty))
+        {
+            <li>@email</li>
+        }
+    </ul>
+
+}
+
+@code {
+    IList<string>? _emails;
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            IGraphService service = new GraphService(GraphServiceClient);
+            
+            var yesterday = DateTime.Now.AddDays(-1);
+            _emails = await service.GetEmailSubjects(yesterday);
+        }
+        catch (Exception ex) //TODO: straight from the template, but should be more specific?
+        {
+            ConsentHandler.HandleException(ex);
+        }
+    }
+}
