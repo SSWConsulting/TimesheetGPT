@@ -10,7 +10,7 @@
 
 👉 Right now, the API isn't used at all; the Blazor Server app handles auth and then talks directly to the Application layer. This is okay for now, but the plan is to use the API to handle all the work, making it easier to integrate this into timesheeting software later.
 
-###❓Challenges and Current Plan
+### 🤨 Challenges and Current Plan
 
 #### 🎫 Token Handling
 
