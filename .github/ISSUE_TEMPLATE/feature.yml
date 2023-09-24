@@ -1,0 +1,29 @@
+name: "✨ Feature request"
+description: Had a good idea for a feature?
+title: "✨ "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: pain
+    attributes:
+      label: The problem
+      description: What is the pain you want to solve?
+      placeholder: It's really annoying when
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Suggested solution
+      description: Whats your idea to fix it?
+      placeholder: Add a field to...
+    validations:
+      required: true
+  - type: textarea
+    id: ac
+    attributes:
+      label: Acceptance Criteria
+      description: "When is this considered 'done'"
+      placeholder: I can do...
+    validations:
+      required: false
