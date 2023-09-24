@@ -10,7 +10,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IAIService, SemKerAIService>();
+        services.AddScoped<IAiService, SemKerAiService>();
         // services.AddScoped<IAIService, LangChainAIService>(); //TODO: Try langchain out
         
         return services;

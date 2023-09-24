@@ -1,14 +1,15 @@
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Orchestration;
 using TimesheetGPT.Application.Interfaces;
 
 namespace TimesheetGPT.Application.Services;
 using Microsoft.Extensions.Configuration;
 
 
-public class SemKerAIService : IAIService
+public class SemKerAiService : IAiService
 {
     private readonly string _apiKey;
-    public SemKerAIService(IConfiguration configuration)
+    public SemKerAiService(IConfiguration configuration)
     {
         if (configuration == null)
             throw new ArgumentNullException(nameof(configuration));
@@ -16,8 +17,9 @@ public class SemKerAIService : IAIService
         _apiKey = configuration["OpenAI:ApiKey"] ?? "";
     }
 
-    public async Task<string> GetSummary(string text)
+    public async Task<string> GetSummary(string text, string extraPrompts)
     {
+        Console.WriteLine(text);
         var builder = new KernelBuilder();
 
         // builder.WithAzureChatCompletionService(
@@ -26,16 +28,22 @@ public class SemKerAIService : IAIService
         //     "...your Azure OpenAI Key..."); // Azure OpenAI Key
 
         builder.WithOpenAIChatCompletionService(
-            "gpt-4",
+            "gpt-3.5-turbo", // Cheap mode
+            // "gpt-4", // 💸
             _apiKey);
 
         var kernel = builder.Build();
         
         var summarizeFunction = kernel.CreateSemanticFunction(Prompts.SummarizeEmailsAndCalendar, maxTokens: 400, temperature: 0, topP: 0.5);
+        
+        var context = kernel.CreateNewContext();
+        
+        context.Variables["input"] = text;
+        context.Variables.TryAdd("extraPrompts", extraPrompts);
 
-        var summary = await summarizeFunction.InvokeAsync(text);
+        var summary = await summarizeFunction.InvokeAsync(context);
 
-        Console.WriteLine(summary);
+        Console.WriteLine(summary.ModelResults);
 
         return summary.Result;
     }

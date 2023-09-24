@@ -22,7 +22,9 @@
                        @bind-Date="_date"
                        DisableToolbar="true"
                        Variant="Variant.Outlined"
+                       IsDateDisabledFunc="@((DateTime dt) => dt.Date > DateTime.Now.Date)"
                        Editable="true"/>
+        
         <MudTextField @bind-Value="_extraPrompt" Label="Additional prompts" Placeholder="Ignore emails about..." Variant="Variant.Outlined"/>
 
         @if (!_loading)
@@ -43,7 +45,7 @@
         }
     </MudStack>
 </MudContainer>
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="max-height: 50%">
     <MudStack Row="true" Justify="Justify.SpaceAround">
         @if (_emails != null && !_loading)
         {
@@ -123,7 +125,7 @@
         try
         {
             var dateTime = _date ?? DateTime.Today;
-            var summary = await TimesheetService.GenerateSummary(dateTime, GraphServiceClient);
+            var summary = await TimesheetService.GenerateSummary(dateTime, GraphServiceClient, _extraPrompt ?? "");
 
             _emails = summary.Emails;
             _meetings = summary.Meetings;

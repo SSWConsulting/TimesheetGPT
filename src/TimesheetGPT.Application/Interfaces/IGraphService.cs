@@ -1,4 +1,5 @@
 ﻿using TimesheetGPT.Application.Classes;
+using TimesheetGPT.Application.Services;
 
 namespace TimesheetGPT.Application.Interfaces;
 
@@ -6,5 +7,5 @@ public interface IGraphService
 {
     public Task<List<string>> GetEmailSubjects(DateTime date);
     public Task<List<Meeting>> GetMeetings(DateTime date);
-    public Task<List<string>> GetTeamsCalls(DateTime date);
+    public Task<List<TeamsCall>> GetTeamsCalls(DateTime date);
 }
