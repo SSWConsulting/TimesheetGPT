@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetGPT.WebAPI", "TimesheetGPT.WebAPI\TimesheetGPT.WebAPI.csproj", "{F368C881-0850-4BC5-9EE7-348A9D027442}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetGPT.WebAPI", "src\TimesheetGPT.WebAPI\TimesheetGPT.WebAPI.csproj", "{F368C881-0850-4BC5-9EE7-348A9D027442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetGPT.Application", "TimesheetGPT.Application\TimesheetGPT.Application.csproj", "{33E6F72B-E0BD-4C23-926A-7D2EB8FEA986}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetGPT.Application", "src\TimesheetGPT.Application\TimesheetGPT.Application.csproj", "{33E6F72B-E0BD-4C23-926A-7D2EB8FEA986}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetGPT.WebUI", "TimesheetGPT.WebUI\TimesheetGPT.WebUI.csproj", "{8A5306C1-5A52-4B04-B63E-5B4AE42F47BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetGPT.WebUI", "src\TimesheetGPT.WebUI\TimesheetGPT.WebUI.csproj", "{8A5306C1-5A52-4B04-B63E-5B4AE42F47BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

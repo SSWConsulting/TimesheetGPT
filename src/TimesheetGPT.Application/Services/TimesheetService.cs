@@ -20,8 +20,7 @@ public class TimesheetService
         var emailSubjects = await graphService.GetEmailSubjects(date);
         var meetings = await graphService.GetMeetings(date);
         
-        var aiService = new SemKerAIService();
-        var summary = await aiService.GetSummary(StringifyData(emailSubjects, meetings));
+        var summary = await _aiService.GetSummary(StringifyData(emailSubjects, meetings));
         
         return new SummaryWithRaw
         {

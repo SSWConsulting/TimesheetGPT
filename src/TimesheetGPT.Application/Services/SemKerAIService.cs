@@ -2,9 +2,20 @@ using Microsoft.SemanticKernel;
 using TimesheetGPT.Application.Interfaces;
 
 namespace TimesheetGPT.Application.Services;
+using Microsoft.Extensions.Configuration;
+
 
 public class SemKerAIService : IAIService
 {
+    private readonly string _apiKey;
+    public SemKerAIService(IConfiguration configuration)
+    {
+        if (configuration == null)
+            throw new ArgumentNullException(nameof(configuration));
+        
+        _apiKey = configuration["OpenAI:ApiKey"] ?? "";
+    }
+
     public async Task<string> GetSummary(string text)
     {
         var builder = new KernelBuilder();
@@ -16,7 +27,7 @@ public class SemKerAIService : IAIService
 
         builder.WithOpenAIChatCompletionService(
             "gpt-4",
-            "😉");
+            _apiKey);
 
         var kernel = builder.Build();
         
