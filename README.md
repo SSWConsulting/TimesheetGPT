@@ -6,6 +6,9 @@
 - 🤖 Using ChatGPT API to summarize all the data
 - 📝 Using all the summaries to make a Timesheet
 
+<img width="1800" alt="MicrosoftTeams-image (1)" src="https://github.com/bradystroud/TimesheetGPT/assets/38869720/c953851f-b5f8-4f95-aed9-bcbcb21d1e3d">
+
+
 ## 🛠 Technical Stuff
 
 👉 Right now, the API isn't used at all; the Blazor Server app handles auth and then talks directly to the Application layer. This is okay for now, but the plan is to use the API to handle all the work, making it easier to integrate this into timesheeting software later.
