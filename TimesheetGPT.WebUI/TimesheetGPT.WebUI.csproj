@@ -15,6 +15,7 @@
     <PackageReference Include="Microsoft.Identity.Web.GraphServiceClient" Version="2.13.4" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.13.4" />
     <PackageReference Include="MudBlazor" Version="6.10.0" />
+    <PackageReference Include="MudBlazor.Markdown" Version="0.1.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,5 +36,6 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
     <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
   </ItemGroup>
+
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using TimesheetGPT.Application.Classes;
 
-namespace TimesheetGPT.Application;
+namespace TimesheetGPT.Application.Interfaces;
 
 public interface IGraphService
 {

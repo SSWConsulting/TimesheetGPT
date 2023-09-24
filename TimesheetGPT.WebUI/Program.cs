@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using MudBlazor;
 using MudBlazor.Services;
+using TimesheetGPT.Application;
+using TimesheetGPT.Application.Services;
+using TimesheetGPT.WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor()
     .AddMicrosoftIdentityConsentHandler();
 builder.Services.AddMudServices();
+builder.Services.AddMudMarkdownServices();
+
+builder.Services.AddApplication();
+
+builder.Services.AddScoped<ClipboardService>();
+builder.Services.AddScoped<TimesheetService>();
 
 var app = builder.Build();
 
