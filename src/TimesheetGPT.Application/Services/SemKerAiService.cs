@@ -28,8 +28,8 @@ public class SemKerAiService : IAiService
         //     "...your Azure OpenAI Key..."); // Azure OpenAI Key
 
         builder.WithOpenAIChatCompletionService(
-            "gpt-3.5-turbo", // Cheap mode
-            // "gpt-4", // 💸
+            // "gpt-3.5-turbo", // Cheap mode
+            "gpt-4", // 💸
             _apiKey);
 
         var kernel = builder.Build();
