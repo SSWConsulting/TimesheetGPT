@@ -44,10 +44,13 @@ Now, you should be able to navigate to `https://localhost:5001` (or another port
 
 ### 🛠 Develop and Contribute
 
-- **Branching Strategy:** Ensure you create a new branch for the feature or fix you are working on. Do not push changes directly to the main branch.
-- **Commit Messages:** Write clear and concise commit messages describing the changes you are making and the reason.
+- **Branching Strategy:** Ensure you create a new branch for the feature or fix you are working on. Do not push changes directly to the main branch.  
+As per https://www.ssw.com.au/rules/do-you-know-when-to-branch-in-git
+- **Commit Messages:** Write clear and concise commit messages describing the changes you are making and the reason.  
+As per https://www.ssw.com.au/rules/use-emojis-in-your-commits
 - **Testing:** Ensure to test your features or fixes before submitting a pull request.
-- **Pull Requests:** Make sure your code is well-commented, follows the established coding style, and passes any tests before submitting a pull request.
+- **Pull Requests:** Make sure your code is well-commented, follows the established coding style, and passes any tests before submitting a pull request.  
+As per https://www.ssw.com.au/rules/write-a-good-pull-request
 
 ### 🔗 Additional Links
 - **Blazor Documentation:** For help with Blazor, visit [Blazor Documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-5.0).
