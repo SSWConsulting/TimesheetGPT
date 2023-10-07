@@ -21,7 +21,7 @@ public class TimesheetService
         var emailSubjects = await graphService.GetEmailSubjects(date);
         var meetings = await graphService.GetMeetings(date);
         
-        var summary = await _aiService.GetSummary(StringifyData(emailSubjects, meetings, additionalNotes), extraPrompts);
+        var summary = await _aiService.GetSummary(StringifyData(emailSubjects, meetings), extraPrompts, additionalNotes);
         
         return new SummaryWithRaw
         {
@@ -32,7 +32,7 @@ public class TimesheetService
         };
     }
     
-    private string StringifyData(List<string> emails, List<Meeting> meetings, string additionalNotes = "")
+    private string StringifyData(List<string> emails, List<Meeting> meetings)
     {
         var result = "Sent emails (subject) \n";
         foreach (var email in emails)
@@ -44,12 +44,6 @@ public class TimesheetService
         {
             result += $"{meeting.Name} - {meeting.Length} \n";
         }
-        
-        if (string.IsNullOrWhiteSpace(additionalNotes))
-            return result;
-        
-        result += "\n Additional notes (freeform) \n";
-        result += $"{additionalNotes}\n";
         
         return result;
     }
