@@ -2,9 +2,8 @@
 
 @using Microsoft.Identity.Web
 @using Microsoft.Graph
-@using MudBlazor
-@using TimesheetGPT.Core.Classes
-@using TimesheetGPT.Core.Services
+@using TimesheetGPT.Application.Models
+@using TimesheetGPT.Application.Services
 @using TimesheetGPT.WebUI.Services
 @inject GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
@@ -48,13 +47,13 @@
 </MudContainer>
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="max-height: 50%">
     <MudStack Row="true" Justify="Justify.SpaceAround">
-        @if (_emails != null && !_loading)
+        @if (_emailSubjects != null && !_loading)
         {
             <ResultCard Heading="Emails sent">
                 <ul>
-                    @foreach (var email in _emails.Where(m => !string.IsNullOrEmpty(m)))
+                    @foreach (var subject in _emailSubjects.Where(m => !string.IsNullOrEmpty(m)))
                     {
-                        <li><MudText>@email</MudText></li>
+                        <li><MudText>@subject</MudText></li>
                     }
                 </ul>
             </ResultCard>
@@ -100,7 +99,7 @@
 
 @code {
     bool _loading;
-    IList<string>? _emails;
+    IList<string>? _emailSubjects;
     IList<Meeting>? _meetings;
     string? _summaryText;
     DateTime? _date = DateTime.Today;
@@ -128,7 +127,7 @@
             var dateTime = _date ?? DateTime.Today;
             var summary = await TimesheetService.GenerateSummary(dateTime, GraphServiceClient, _extraPrompt ?? "");
 
-            _emails = summary.Emails;
+            _emailSubjects = summary.Emails;
             _meetings = summary.Meetings;
             _summaryText = summary.Summary;
         }

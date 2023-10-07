@@ -1,22 +1,19 @@
 @using TimesheetGPT.WebUI.Services
-@using TimesheetGPT.Core.Services
+@using TimesheetGPT.Application.Services
 @inject ClipboardService ClipboardService
 @inject ISnackbar Snackbar
 
 <MudPaper Class="ma-2 pa-4">
-    @if (HasCopyButton)
-    {
         <MudStack Row="true">
             <MudText Typo="Typo.h3" Class="mt-1 mb-4">Summary</MudText>
             <MudSpacer/>
-            <MudTooltip Text="Copy">
-                <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" @onclick="CopySummary"/>
-            </MudTooltip>
+            @if (HasCopyButton)
+            {
+                <MudTooltip Text="Copy">
+                    <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" @onclick="CopySummary"/>
+                </MudTooltip>
+            }
         </MudStack>
-    }
-    else
-    {
-        <MudText Typo="Typo.h3" Class="mt-1 mb-4">@Heading</MudText>
     }
     @ChildContent
 </MudPaper>
