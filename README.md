@@ -31,7 +31,7 @@ Open a terminal or command prompt and run:
    ```
 Navigate to the project folder:
    ```bash
-   cd TimesheetGPT
+   cd TimesheetGPT/src/TimesheetGPT.WebUI
    ```
 
 #### 2. **Run the Application**
@@ -40,7 +40,7 @@ Run the application using the following command:
    ```bash
    dotnet run
    ```
-Now, you should be able to navigate to `https://localhost:5001` (or another port if you have configured it differently) in your web browser to view the application.
+Now, you should be able to navigate to `https://localhost:7270` (or another port if you have configured it differently) in your web browser to view the application.
 
 ### 🛠 Develop and Contribute
 
