@@ -15,7 +15,7 @@ public class SemKerAiService : IAiService
         _apiKey = configuration["OpenAI:ApiKey"] ?? "";
     }
 
-    public async Task<string> GetSummary(string text, string extraPrompts)
+    public async Task<string> GetSummary(string text, string extraPrompts, string additionalNotes = "")
     {
         Console.WriteLine(text);
         var builder = new KernelBuilder();
@@ -32,11 +32,13 @@ public class SemKerAiService : IAiService
 
         var kernel = builder.Build();
         
+        // Note: Token limit hurts things like additional notes. If you don't have enough, the prompt will suck
         var summarizeFunction = kernel.CreateSemanticFunction(Prompts.SummarizeEmailsAndCalendar, maxTokens: 400, temperature: 0, topP: 0.5);
         
         var context = kernel.CreateNewContext();
 
         context.Variables.TryAdd(PromptVariables.Input, text);
+        context.Variables.TryAdd(PromptVariables.AdditionalNotes, additionalNotes);
         context.Variables.TryAdd(PromptVariables.ExtraPrompts, extraPrompts);
 
         var summary = await summarizeFunction.InvokeAsync(context);
