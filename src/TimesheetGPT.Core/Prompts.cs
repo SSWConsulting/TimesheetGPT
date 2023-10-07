@@ -25,6 +25,8 @@ public static class Prompts
                                               If there is no meetings or emails, respond with a joke about the user not doing any work on this day :)
 
                                               {{${{{PromptVariables.ExtraPrompts}}}}}
+                                              
+                                              {{${{{PromptVariables.AdditionalNotes}}}}}
                                                
                                               {{${{{PromptVariables.Input}}}}}
                                            """;
@@ -35,5 +37,6 @@ public static class Prompts
 public static class PromptVariables
 {
     public const string ExtraPrompts = "extraPrompts";
+    public const string AdditionalNotes = "additionalNotes";
     public const string Input = "inputContent";
 }

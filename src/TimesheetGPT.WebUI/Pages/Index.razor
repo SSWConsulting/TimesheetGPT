@@ -152,7 +152,7 @@
         try
         {
             var dateTime = _date ?? DateTime.Today;
-            var summary = await TimesheetService.GenerateSummary(dateTime, GraphServiceClient, _extraPrompt ?? "");
+            var summary = await TimesheetService.GenerateSummary(dateTime, GraphServiceClient, _extraPrompt ?? "", _additionalNotes);
 
             _emailSubjects = summary.Emails;
             _meetings = summary.Meetings;
