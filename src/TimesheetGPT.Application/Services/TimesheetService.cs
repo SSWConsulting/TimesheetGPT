@@ -1,6 +1,6 @@
 using Microsoft.Graph;
-using TimesheetGPT.Application.Classes;
 using TimesheetGPT.Application.Interfaces;
+using TimesheetGPT.Application.Models;
 
 namespace TimesheetGPT.Application.Services;
 
