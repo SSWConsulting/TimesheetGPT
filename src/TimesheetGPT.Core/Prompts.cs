@@ -5,7 +5,7 @@ public static class Prompts
 
     
     // Doesn't hot reload
-    public static readonly string SummarizeEmailsAndCalendar = $$$"""""
+    public static readonly string SummarizeEmailsAndCalendar = $$$"""
                                               These are all my meetings attended and emails sent for the day, turn them into a succinct summary for a timesheet.
                                               Meetings are in the format of 'Meeting Name - Meeting Length', use the length to determine relevancy and importance but dont include it in the output
                                               Ignore meetings that are trivial e.g. Daily Scrums, these happen every day and are not important
@@ -24,15 +24,16 @@ public static class Prompts
                                               Only output a Markdown unordered list.
                                               If there is no meetings or emails, respond with a joke about the user not doing any work on this day :)
 
-                                               ${{{{{PromptVariables.ExtraPrompts}}}}}
+                                              {{${{{PromptVariables.ExtraPrompts}}}}}
                                                
-                                               ${{{{{PromptVariables.Input}}}}}
-                                           """"";
+                                              {{${{{PromptVariables.Input}}}}}
+                                           """;
+
 }
 
 
 public static class PromptVariables
 {
     public const string ExtraPrompts = "extraPrompts";
-    public const string Input = "input";
+    public const string Input = "inputContent";
 }
