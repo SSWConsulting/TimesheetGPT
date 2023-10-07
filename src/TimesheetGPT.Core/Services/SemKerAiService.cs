@@ -37,6 +37,7 @@ public class SemKerAiService : IAiService
         var context = kernel.CreateNewContext();
 
         context.Variables.TryAdd(PromptVariables.Input, text);
+        context.Variables.TryAdd(PromptVariables.AdditionalNotes, text);
         context.Variables.TryAdd(PromptVariables.ExtraPrompts, extraPrompts);
 
         var summary = await summarizeFunction.InvokeAsync(context);

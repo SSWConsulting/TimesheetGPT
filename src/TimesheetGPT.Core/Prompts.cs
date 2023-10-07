@@ -27,6 +27,8 @@ public static class Prompts
                                               {{${{{PromptVariables.ExtraPrompts}}}}}
                                                
                                               {{${{{PromptVariables.Input}}}}}
+                                              
+                                              {{${{{PromptVariables.AdditionalNotes}}}}}
                                            """;
 
 }
@@ -36,4 +38,5 @@ public static class PromptVariables
 {
     public const string ExtraPrompts = "extraPrompts";
     public const string Input = "inputContent";
+    public const string AdditionalNotes = "additionalNotes";
 }
