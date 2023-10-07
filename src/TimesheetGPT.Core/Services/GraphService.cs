@@ -8,12 +8,11 @@ namespace TimesheetGPT.Core.Services;
 
 public class GraphService : IGraphService
 {
-    private GraphServiceClient _client;
+    private readonly GraphServiceClient _client;
 
     public GraphService(GraphServiceClient client)
     {
-        if (client == null)
-            throw new ArgumentNullException(nameof(client));
+        ArgumentNullException.ThrowIfNull(client);
 
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
