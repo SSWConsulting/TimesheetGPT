@@ -38,7 +38,7 @@
                        StartIcon="@Icons.Material.Filled.PostAdd"
                        Disabled="_loading"
                        @onclick="GenerateTimesheet">
-                Generate
+                @_generateButtonText
             </MudButton>
         </MudItem>
     </MudGrid>
@@ -124,6 +124,7 @@
     DateTime? _date = DateTime.Today;
     string _name = "...";
     string? _extraPrompt;
+    string _generateButtonText = "Generate";
 
     protected async override Task OnInitializedAsync()
     {
@@ -149,6 +150,8 @@
             _emailSubjects = summary.Emails;
             _meetings = summary.Meetings;
             _summaryText = summary.Summary;
+            
+            _generateButtonText = "Regenerate";
         }
         catch (Exception ex) //TODO: straight from the template, but should be more specific?
         {
