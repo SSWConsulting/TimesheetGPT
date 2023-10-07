@@ -1,5 +1,6 @@
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
+using Microsoft.Graph.Models.ODataErrors;
 using TimesheetGPT.Core.Interfaces;
 using TimesheetGPT.Core.Models;
 
@@ -24,7 +25,6 @@ public class GraphService : IGraphService
         var dateUtc = date.ToUniversalTime();
         var nextDayUtc = nextDay.ToUniversalTime();
 
-        // GET https://graph.microsoft.com/v1.0/me/mailFolders('sentitems')/messages
         var messages = await _client.Me.MailFolders["sentitems"].Messages
             .GetAsync(rc =>
             {
@@ -52,7 +52,7 @@ public class GraphService : IGraphService
         var nextDay = date.AddDays(1);
         var dateUtc = date.ToUniversalTime();
         var nextDayUtc = nextDay.ToUniversalTime();
-        
+
         var meetings = await _client.Me.CalendarView.GetAsync(rc =>
         {
             rc.QueryParameters.Top = 999;
@@ -61,7 +61,7 @@ public class GraphService : IGraphService
             rc.QueryParameters.Orderby = new[] { "start/dateTime" };
             rc.QueryParameters.Select = new[] { "subject", "start", "end", "occurrenceId" };
         });
-        
+
         if (meetings is { Value.Count: > 1 })
         {
             return meetings.Value.Select(m => new Meeting
@@ -72,28 +72,38 @@ public class GraphService : IGraphService
                 // Sender = m.EmailAddress.Address TODO: Why is Organizer and attendees null? permissions?
             }).ToList();
         }
-        
+
         return new List<Meeting>(); //slack
     }
-    public async Task<List<TeamsCall>> GetTeamsCalls(DateTime date) {
+    public async Task<List<TeamsCall>> GetTeamsCalls(DateTime date)
+    {
         var nextDay = date.AddDays(1);
         var dateUtc = date.ToUniversalTime();
         var nextDayUtc = nextDay.ToUniversalTime();
-        
-        var calls = await _client.Communications.CallRecords.GetAsync(rc =>
-        {
-            rc.QueryParameters.Top = 999;
-            rc.QueryParameters.Orderby = new[] { "start/dateTime" };
-            rc.QueryParameters.Select = new[] { "subject", "start", "end", "occurrenceId" };
-        });
 
-        if (calls is { Value.Count: > 1 })
+        try
         {
-            return calls.Value.Select(m => new TeamsCall
+            var calls = await _client.Communications.CallRecords.GetAsync(rc =>
             {
-                Attendees = m.Participants.Select(p => p.User.DisplayName).ToList(),
-                Length = m.EndDateTime - m.StartDateTime ?? TimeSpan.Zero,
-            }).ToList();
+                rc.QueryParameters.Top = 999;
+                rc.QueryParameters.Orderby = new[] { "startDateTime" };
+                rc.QueryParameters.Select = new[] { "startDateTime", "endDateTime", "participants" };
+                rc.QueryParameters.Filter = $"startDateTime ge {dateUtc:o} and endDateTime lt {nextDayUtc:o}";
+            });
+
+            if (calls is { Value.Count: > 1 })
+            {
+                return calls.Value.Select(m => new TeamsCall
+                {
+                    Attendees = m.Participants.Select(p => p.User.DisplayName).ToList(),
+                    Length = m.EndDateTime - m.StartDateTime ?? TimeSpan.Zero,
+                }).ToList();
+            }
+        }
+        catch (ODataError e)
+        {
+            Console.WriteLine("Need CallRecords.Read.All scopes");
+            throw;
         }
 
         return new List<TeamsCall>();
