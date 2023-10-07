@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>0984693a-b881-43ca-b901-493776cefa32</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TimesheetGPT.WebAPI\TimesheetGPT.WebAPI.csproj" />
+      <ProjectReference Include="..\TimesheetGPT.WebUI\TimesheetGPT.WebUI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Error.cshtml" />
+      <AdditionalFiles Include="Pages\Index.razor" />
+      <AdditionalFiles Include="Pages\_Host.cshtml" />
+    </ItemGroup>
+
+</Project>
