@@ -41,6 +41,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '8.x'  # use your desired .NET version
+        include-prerelease: true
         
     - name: Build solution
       run: dotnet build TimesheetGPT.sln --configuration Release
