@@ -28,7 +28,6 @@
                           Placeholder="Ignore emails about..." 
                           Variant="Variant.Outlined"/>
         </MudItem>
-        
         <MudItem xs="12" md="4">
             <MudButton Class=""
                        FullWidth="true"
@@ -41,6 +40,15 @@
                 @_generateButtonText
             </MudButton>
         </MudItem>
+        
+        <MudExpansionPanel Text="Additional notes">
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_additionalNotes"
+                              Variant="Variant.Outlined"
+                              Placeholder="I walked the dog for Adam..." 
+                              Lines="15"/>
+            </MudItem>
+        </MudExpansionPanel>
     </MudGrid>
 </MudContainer>
 <MudContainer MaxWidth="MaxWidth.Medium">
@@ -92,10 +100,8 @@
                                     formatted = $"{timeSpan.Minutes} minutes";
                                 }
 
-                                <MudPaper Class="ma-2 pa-2">
-                                    <MudText Typo="Typo.body2">@meeting.Name</MudText>
-                                    <MudText Typo="Typo.body1">@formatted</MudText>
-                                </MudPaper>
+                                <MudText Typo="Typo.body2">@meeting.Name</MudText>
+                                <MudText Typo="Typo.body1">@formatted</MudText>
                             }
                         </ul>
                     </ResultCard>
@@ -122,11 +128,12 @@
     IList<Meeting>? _meetings;
     string? _summaryText;
     DateTime? _date = DateTime.Today;
-    string _name = "...";
+    string? _name = "...";
     string? _extraPrompt;
+    string _additionalNotes = string.Empty;
     string _generateButtonText = "Generate";
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         try
         {
@@ -150,14 +157,17 @@
             _emailSubjects = summary.Emails;
             _meetings = summary.Meetings;
             _summaryText = summary.Summary;
-            
+
             _generateButtonText = "Regenerate";
         }
         catch (Exception ex) //TODO: straight from the template, but should be more specific?
         {
             ConsentHandler.HandleException(ex);
         }
-
-        _loading = false;
+        finally
+        {
+            _loading = false;
+        }
+        
     }
 }
