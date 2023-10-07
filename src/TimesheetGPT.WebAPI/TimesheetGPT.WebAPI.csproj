@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TimesheetGPT.Application\TimesheetGPT.Application.csproj" />
+      <ProjectReference Include="..\TimesheetGPT.Core\TimesheetGPT.Core.csproj" />
     </ItemGroup>
 
 </Project>

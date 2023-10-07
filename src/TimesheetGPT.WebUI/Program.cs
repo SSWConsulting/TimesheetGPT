@@ -3,8 +3,8 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using MudBlazor;
 using MudBlazor.Services;
-using TimesheetGPT.Application;
-using TimesheetGPT.Application.Services;
+using TimesheetGPT.Core;
+using TimesheetGPT.Core.Services;
 using TimesheetGPT.WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);

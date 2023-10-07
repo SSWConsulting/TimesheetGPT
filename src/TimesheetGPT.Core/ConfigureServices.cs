@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graph.Models.ExternalConnectors;
 using System.Reflection;
-using TimesheetGPT.Application.Interfaces;
-using TimesheetGPT.Application.Services;
+using TimesheetGPT.Core.Interfaces;
+using TimesheetGPT.Core.Services;
 
-namespace TimesheetGPT.Application;
+namespace TimesheetGPT.Core;
 
 public static class ConfigureServices
 {

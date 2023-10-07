@@ -1,8 +1,8 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
-using TimesheetGPT.Application.Interfaces;
+using TimesheetGPT.Core.Interfaces;
 
-namespace TimesheetGPT.Application.Services;
+namespace TimesheetGPT.Core.Services;
 using Microsoft.Extensions.Configuration;
 
 

@@ -1,9 +1,9 @@
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
-using TimesheetGPT.Application.Classes;
-using TimesheetGPT.Application.Interfaces;
+using TimesheetGPT.Core.Classes;
+using TimesheetGPT.Core.Interfaces;
 
-namespace TimesheetGPT.Application.Services;
+namespace TimesheetGPT.Core.Services;
 
 public class GraphService : IGraphService
 {
