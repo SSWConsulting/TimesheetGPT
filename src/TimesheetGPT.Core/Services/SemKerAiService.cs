@@ -1,10 +1,8 @@
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Orchestration;
-using TimesheetGPT.Application.Interfaces;
-
-namespace TimesheetGPT.Application.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.SemanticKernel;
+using TimesheetGPT.Core.Interfaces;
 
+namespace TimesheetGPT.Core.Services;
 
 public class SemKerAiService : IAiService
 {

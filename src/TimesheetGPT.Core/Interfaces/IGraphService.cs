@@ -1,7 +1,7 @@
-﻿using TimesheetGPT.Application.Models;
-using TimesheetGPT.Application.Services;
+﻿using TimesheetGPT.Core.Models;
+using TimesheetGPT.Core.Services;
 
-namespace TimesheetGPT.Application.Interfaces;
+namespace TimesheetGPT.Core.Interfaces;
 
 public interface IGraphService
 {
