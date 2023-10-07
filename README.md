@@ -1,6 +1,9 @@
 🤖
 # 🕒 TimesheetGPT
 
+
+https://timesheet-gpt.azurewebsites.net/
+
 🎯 The goal is to make timesheets easier (especially for non-devs) by:
 - 📊 Getting data from various sources (currently Microsoft Graph, soon GitHub, Trello, maybe DevOps)
 - 🤖 Using ChatGPT API to summarize all the data
