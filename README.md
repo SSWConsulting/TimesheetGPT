@@ -27,7 +27,7 @@ Ensure you have the following installed:
 
 Open a terminal or command prompt and run:
    ```bash
-   git clone https://github.com/bradystroud/TimesheetGPT.git
+   git clone https://github.com/SSWConsulting/TimesheetGPT.git
    ```
 Navigate to the project folder:
    ```bash
