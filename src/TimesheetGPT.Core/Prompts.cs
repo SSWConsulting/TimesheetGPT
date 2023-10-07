@@ -24,13 +24,12 @@ public static class Prompts
                                               Only output a Markdown unordered list.
                                               If there is no meetings or emails, respond with a joke about the user not doing any work on this day :)
 
+                                              {{${{{PromptVariables.Input}}}}}
+                                              
                                               {{${{{PromptVariables.ExtraPrompts}}}}}
                                               
                                               {{${{{PromptVariables.AdditionalNotes}}}}}
                                                
-                                              {{${{{PromptVariables.Input}}}}}
-                                              
-                                              {{${{{PromptVariables.AdditionalNotes}}}}}
                                            """;
 
 }
@@ -41,5 +40,4 @@ public static class PromptVariables
     public const string ExtraPrompts = "extraPrompts";
     public const string AdditionalNotes = "additionalNotes";
     public const string Input = "inputContent";
-    public const string AdditionalNotes = "additionalNotes";
 }
