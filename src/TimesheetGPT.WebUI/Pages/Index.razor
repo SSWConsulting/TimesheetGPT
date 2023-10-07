@@ -4,19 +4,15 @@
 @using Microsoft.Graph
 @using TimesheetGPT.Core.Models
 @using TimesheetGPT.Core.Services
-@using TimesheetGPT.WebUI.Services
 @inject GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
 @inject TimesheetService TimesheetService
 
 <MudContainer MaxWidth="MaxWidth.Medium">
     <MudText Typo="Typo.h1">Generate Timesheet</MudText>
-    @if (!string.IsNullOrEmpty(_name))
-    {
         <MudText Typo="Typo.subtitle1">
             Hi @_name, what day would you like to generate a timesheet for?
         </MudText>
-    }
     <MudStack Spacing="3" Row="true" Class="mt-6">
         <MudDatePicker Label="Timesheet day"
                        @bind-Date="_date"
@@ -104,7 +100,7 @@
     IList<Meeting>? _meetings;
     string? _summaryText;
     DateTime? _date = DateTime.Today;
-    string? _name;
+    string _name = "...";
     string? _extraPrompt;
 
     protected async override Task OnInitializedAsync()
