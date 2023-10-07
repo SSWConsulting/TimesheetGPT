@@ -1,4 +1,4 @@
-namespace TimesheetGPT.Core.Interfaces;
+namespace TimesheetGPT.Application.Interfaces;
 
 public interface IAiService
 {

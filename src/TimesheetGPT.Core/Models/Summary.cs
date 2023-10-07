@@ -1,4 +1,4 @@
-namespace TimesheetGPT.Core.Classes;
+namespace TimesheetGPT.Application.Models;
 
 public class SummaryWithRaw
 {

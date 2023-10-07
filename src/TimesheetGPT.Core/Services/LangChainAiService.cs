@@ -1,6 +1,6 @@
-using TimesheetGPT.Core.Interfaces;
+using TimesheetGPT.Application.Interfaces;
 
-namespace TimesheetGPT.Core.Services;
+namespace TimesheetGPT.Application.Services;
 
 public class LangChainAiService : IAiService
 {

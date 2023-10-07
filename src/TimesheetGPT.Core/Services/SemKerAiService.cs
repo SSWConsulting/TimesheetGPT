@@ -1,8 +1,8 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
-using TimesheetGPT.Core.Interfaces;
+using TimesheetGPT.Application.Interfaces;
 
-namespace TimesheetGPT.Core.Services;
+namespace TimesheetGPT.Application.Services;
 using Microsoft.Extensions.Configuration;
 
 
@@ -37,9 +37,9 @@ public class SemKerAiService : IAiService
         var summarizeFunction = kernel.CreateSemanticFunction(Prompts.SummarizeEmailsAndCalendar, maxTokens: 400, temperature: 0, topP: 0.5);
         
         var context = kernel.CreateNewContext();
-        
-        context.Variables["input"] = text;
-        context.Variables.TryAdd("extraPrompts", extraPrompts);
+
+        context.Variables.TryAdd(PromptVariables.Input, text);
+        context.Variables.TryAdd(PromptVariables.ExtraPrompts, extraPrompts);
 
         var summary = await summarizeFunction.InvokeAsync(context);
 
