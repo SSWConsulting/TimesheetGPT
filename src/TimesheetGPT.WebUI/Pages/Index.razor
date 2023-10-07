@@ -8,89 +8,111 @@
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
 @inject TimesheetService TimesheetService
 
-<MudContainer MaxWidth="MaxWidth.Medium">
+<MudContainer MaxWidth="MaxWidth.Medium" Style="padding-bottom: 2rem;">
     <MudText Typo="Typo.h1">Generate Timesheet</MudText>
-        <MudText Typo="Typo.subtitle1">
-            Hi @_name, what day would you like to generate a timesheet for?
-        </MudText>
-    <MudStack Spacing="3" Row="true" Class="mt-6">
-        <MudDatePicker Label="Timesheet day"
-                       @bind-Date="_date"
-                       DisableToolbar="true"
-                       Variant="Variant.Outlined"
-                       IsDateDisabledFunc="@((DateTime dt) => dt.Date > DateTime.Now.Date)"
-                       Editable="true"/>
+    <MudText Typo="Typo.subtitle1">
+        Hi @_name, what day would you like to generate a timesheet for?
+    </MudText>
+    <MudGrid Justify="Justify.SpaceBetween" Style="align-items: center">
+        <MudItem xs="12" md="4">
+            <MudDatePicker Label="Timesheet day"
+                           @bind-Date="_date"
+                           DisableToolbar="true"
+                           Variant="Variant.Outlined"
+                           IsDateDisabledFunc="@((DateTime dt) => dt.Date > DateTime.Now.Date)"
+                           Editable="true"/>
+        </MudItem> 
+        <MudItem xs="12" md="4">
+            <MudTextField @bind-Value="_extraPrompt" 
+                          Label="Additional prompts" 
+                          Placeholder="Ignore emails about..." 
+                          Variant="Variant.Outlined"/>
+        </MudItem>
         
-        <MudTextField @bind-Value="_extraPrompt" Label="Additional prompts" Placeholder="Ignore emails about..." Variant="Variant.Outlined"/>
-
-        @if (!_loading)
-        {
-            <MudButton FullWidth="false"
+        <MudItem xs="12" md="4">
+            <MudButton Class=""
+                       FullWidth="true"
                        Color="Color.Secondary"
                        ButtonType="ButtonType.Submit"
                        Variant="Variant.Filled"
-                       StartIcon="@Icons.Material.Filled.GeneratingTokens"
+                       StartIcon="@Icons.Material.Filled.PostAdd"
+                       Disabled="_loading"
                        @onclick="GenerateTimesheet">
                 Generate
             </MudButton>
-        }
-        @if (_loading)
-        {
-            <MudStack AlignItems="AlignItems.Center">
-                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Class="ma-2"/>
-            </MudStack>
-        }
-    </MudStack>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="max-height: 50%">
-    <MudStack Row="true" Justify="Justify.SpaceAround">
-        @if (_emailSubjects != null && !_loading)
-        {
-            <ResultCard Heading="Emails sent">
-                <ul>
-                    @foreach (var subject in _emailSubjects.Where(m => !string.IsNullOrEmpty(m)))
-                    {
-                        <li><MudText>@subject</MudText></li>
-                    }
-                </ul>
-            </ResultCard>
-        }
+<MudContainer MaxWidth="MaxWidth.Medium">
+    @if (_loading)
+    {
+        <MudStack AlignItems="AlignItems.Center">
+            <MudProgressCircular Size="Size.Large" Color="Color.Secondary" Indeterminate="true" Class="ma-2"/>
+        </MudStack>
+    }
+    else
+    {
 
-        @if (!_loading && _meetings != null)
-        {
-            <ResultCard Heading="Meetings">
-                <ul>
-                    @foreach (var meeting in _meetings)
-                    {
-                        string formatted;
+        <MudGrid Justify="Justify.SpaceBetween">
+            @if (_emailSubjects is not null && _emailSubjects?.Count > 1 && !_loading)
+            {
+                <MudItem xs="12" md="6">
+                    <ResultCard Heading="Emails sent">
+                        <ul>
+                            @foreach (var subject in _emailSubjects.Where(m => !string.IsNullOrEmpty(m)))
+                            {
+                                <li><MudText>@subject</MudText></li>
+                            }
+                        </ul>
+                    </ResultCard>
+                </MudItem>
+            }
 
-                        var timeSpan = meeting.Length;
-                        if (timeSpan.Hours > 0)
-                        {
-                            formatted = $"{timeSpan.Hours} hours {timeSpan.Minutes} minutes";
-                        }
-                        else
-                        {
-                            formatted = $"{timeSpan.Minutes} minutes";
-                        }
+            @if (!_loading && _meetings != null)
+            {
+                var meetingsMiddleBreak = "12";
+                if (_emailSubjects is not null && _emailSubjects?.Count > 1 && !_loading)
+                {
+                    meetingsMiddleBreak = "6";
+                }
+                <MudItem xs="12" md="@(int.Parse(meetingsMiddleBreak))">
+                    <ResultCard Heading="Meetings">
+                        <ul>
+                            @foreach (var meeting in _meetings)
+                            {
+                                string formatted;
 
-                        <MudPaper Class="ma-2 pa-2">
-                            <MudText Typo="Typo.body2">@meeting.Name</MudText>
-                            <MudText Typo="Typo.body1">@formatted</MudText>
-                        </MudPaper>
-                    }
-                </ul>
-            </ResultCard>
-        }
+                                var timeSpan = meeting.Length;
+                                if (timeSpan.Hours > 0)
+                                {
+                                    formatted = $"{timeSpan.Hours} hours {timeSpan.Minutes} minutes";
+                                }
+                                else
+                                {
+                                    formatted = $"{timeSpan.Minutes} minutes";
+                                }
 
-        @if (!_loading && _summaryText != null)
-        {
-            <ResultCard Heading="Summary" HasCopyButton="true" CopyText="@_summaryText">
-                <MudText Typo="Typo.body1"></MudText>
-                <MudMarkdown Value="@_summaryText"/>
-            </ResultCard>
-        }
-    </MudStack>
+                                <MudPaper Class="ma-2 pa-2">
+                                    <MudText Typo="Typo.body2">@meeting.Name</MudText>
+                                    <MudText Typo="Typo.body1">@formatted</MudText>
+                                </MudPaper>
+                            }
+                        </ul>
+                    </ResultCard>
+                </MudItem>
+            }
+
+            @if (!_loading && _summaryText != null)
+            {
+                <MudItem xs="12">
+                    <ResultCard Heading="Summary" HasCopyButton="true" CopyText="@_summaryText">
+                        <MudText Typo="Typo.body1"></MudText>
+                        <MudMarkdown Value="@_summaryText"/>
+                    </ResultCard>
+                </MudItem>
+            }
+        </MudGrid>
+    }                
 </MudContainer>
 
 
