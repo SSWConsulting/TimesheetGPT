@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <AdditionalFiles Include="Pages\Error.cshtml" />
-      <AdditionalFiles Include="Pages\Index.razor" />
       <AdditionalFiles Include="Pages\_Host.cshtml" />
     </ItemGroup>
 

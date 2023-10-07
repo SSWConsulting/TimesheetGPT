@@ -1,4 +1,4 @@
-namespace TimesheetGPT.Application;
+namespace TimesheetGPT.Core;
 
 public static class Prompts
 {

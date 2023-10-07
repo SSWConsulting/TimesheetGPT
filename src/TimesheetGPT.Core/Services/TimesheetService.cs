@@ -1,8 +1,8 @@
 using Microsoft.Graph;
-using TimesheetGPT.Application.Interfaces;
-using TimesheetGPT.Application.Models;
+using TimesheetGPT.Core.Interfaces;
+using TimesheetGPT.Core.Models;
 
-namespace TimesheetGPT.Application.Services;
+namespace TimesheetGPT.Core.Services;
 
 public class TimesheetService
 {
