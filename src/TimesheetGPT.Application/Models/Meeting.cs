@@ -1,4 +1,4 @@
-namespace TimesheetGPT.Application.Classes;
+namespace TimesheetGPT.Application.Models;
 
 public class Meeting
 {

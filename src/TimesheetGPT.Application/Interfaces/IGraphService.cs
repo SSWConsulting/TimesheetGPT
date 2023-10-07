@@ -1,4 +1,4 @@
-﻿using TimesheetGPT.Application.Classes;
+﻿using TimesheetGPT.Application.Models;
 using TimesheetGPT.Application.Services;
 
 namespace TimesheetGPT.Application.Interfaces;

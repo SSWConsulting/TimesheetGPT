@@ -1,7 +1,7 @@
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
-using TimesheetGPT.Application.Classes;
 using TimesheetGPT.Application.Interfaces;
+using TimesheetGPT.Application.Models;
 
 namespace TimesheetGPT.Application.Services;
 
