@@ -101,8 +101,7 @@ public class GraphService : IGraphService
         }
         catch (ODataError e)
         {
-            Console.WriteLine("Need CallRecords.Read.All scopes");
-            throw;
+            throw new Exception("Need CallRecords.Read.All scopes", e);
         }
 
         return new List<TeamsCall>();
