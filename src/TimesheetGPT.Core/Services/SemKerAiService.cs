@@ -9,15 +9,13 @@ public class SemKerAiService : IAiService
     private readonly string _apiKey;
     public SemKerAiService(IConfiguration configuration)
     {
-        if (configuration == null)
-            throw new ArgumentNullException(nameof(configuration));
-        
+        ArgumentNullException.ThrowIfNull(configuration);
+
         _apiKey = configuration["OpenAI:ApiKey"] ?? "";
     }
 
     public async Task<string> GetSummary(string text, string extraPrompts, string additionalNotes = "")
     {
-        Console.WriteLine(text);
         var builder = new KernelBuilder();
 
         // builder.WithAzureChatCompletionService(
@@ -42,8 +40,6 @@ public class SemKerAiService : IAiService
         context.Variables.TryAdd(PromptVariables.ExtraPrompts, extraPrompts);
 
         var summary = await summarizeFunction.InvokeAsync(context);
-
-        Console.WriteLine(summary.ModelResults);
 
         return summary.Result;
     }

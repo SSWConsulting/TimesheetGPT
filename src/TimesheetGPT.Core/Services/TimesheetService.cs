@@ -5,23 +5,18 @@ using TimesheetGPT.Core.Models;
 
 namespace TimesheetGPT.Core.Services;
 
-public class TimesheetService
+public class TimesheetService(IAiService aiService, GraphServiceClient graphServiceClient)
 {
-    private readonly IAiService _aiService;
-
-    public TimesheetService(IAiService aiService)
+    public async Task<SummaryWithRaw> GenerateSummary(DateTime date, string extraPrompts = "", string additionalNotes = "")
     {
-        _aiService = aiService;
-    }
-
-    public async Task<SummaryWithRaw> GenerateSummary(DateTime date, GraphServiceClient client, string extraPrompts = "", string additionalNotes = "")
-    {
-        IGraphService graphService = new GraphService(client);
+        var graphService = new GraphService(graphServiceClient);
         
         var emailSubjects = await graphService.GetEmailSubjects(date);
         var meetings = await graphService.GetMeetings(date);
+        // var calls = await graphService.GetTeamsCalls(date);
+        // TODO: SSW needs to allow the CallRecords.Read.All scope for this to work
         
-        var summary = await _aiService.GetSummary(StringifyData(emailSubjects, meetings), extraPrompts, additionalNotes);
+        var summary = await aiService.GetSummary(StringifyData(emailSubjects, meetings), extraPrompts, additionalNotes);
         
         return new SummaryWithRaw
         {
@@ -32,7 +27,7 @@ public class TimesheetService
         };
     }
     
-    private string StringifyData(List<string> emails, List<Meeting> meetings)
+    private string StringifyData(IEnumerable<string> emails, IList<Meeting> meetings)
     {
         var result = "Sent emails (subject) \n";
         foreach (var email in emails)
@@ -40,6 +35,7 @@ public class TimesheetService
             result += email + "\n";
         }
         result += "\n Calendar Events (name - length) \n";
+        
         foreach (var meeting in meetings)
         {
             result += $"{meeting.Name} - {meeting.Length} \n";
