@@ -61,30 +61,3 @@ As per https://www.ssw.com.au/rules/write-a-good-pull-request
 
 ### 🙌 Thanks for Contributing!
 Your contributions and insights are integral to the growth and functionality of TimesheetGPT. Feel free to submit issues, create pull requests, or document any bugs found. Let's make TimesheetGPT stellar together!
-
----
-
-Feel free to modify as per your project’s specific needs and guidelines. This is a generic guide that will help developers set up and start contributing to your project.
-
-👉 Right now, the API isn't used at all; the Blazor Server app handles auth and then talks directly to the Application layer. This is okay for now, but the plan is to use the API to handle all the work, making it easier to integrate this into timesheeting software later.
-
-### 🤨 Challenges and Current Plan
-
-#### 🎫 Token Handling
-
-💭 We're facing some challenges around where to handle OAuth token generation. Should this happen on the client side or directly within the API? For now, the thought is that acquiring the token on the client side makes the most sense, as it can then be forwarded to the API.
-
-#### 🔒 Token Validation
-
-🤷 Another question is how the API should validate the received token. Should there be explicit validation, or can we simply make the API request and handle any failures as they come? This is still under consideration.
-
-#### 🚀 Sequence of Operations (Desired, but not yet implemented)
-
-📋 The desired sequence of operations is as follows:
-1. User logs in on the Blazor Client.
-2. Generate an OAuth token with the required permissions (scopes).
-3. Pass this token to the external API.
-4. The external API uses the token to interact with Microsoft Graph or other services.
-
-👨‍💻 We're focusing on making it work with Blazor Server first and will address these token-handling complexities later.
-
