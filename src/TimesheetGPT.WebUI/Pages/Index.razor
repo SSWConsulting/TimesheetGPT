@@ -1,9 +1,5 @@
 ﻿@page "/"
 
-@using Microsoft.Identity.Web
-@using Microsoft.Graph
-@using TimesheetGPT.Core.Models
-@using TimesheetGPT.Core.Services
 @inject GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
 @inject TimesheetService TimesheetService
@@ -21,11 +17,11 @@
                            Variant="Variant.Outlined"
                            IsDateDisabledFunc="@((DateTime dt) => dt.Date > DateTime.Now.Date)"
                            Editable="true"/>
-        </MudItem> 
+        </MudItem>
         <MudItem xs="12" md="4">
-            <MudTextField @bind-Value="_extraPrompt" 
-                          Label="Additional prompts" 
-                          Placeholder="Ignore emails about..." 
+            <MudTextField @bind-Value="_extraPrompt"
+                          Label="Additional prompts"
+                          Placeholder="Ignore emails about..."
                           Variant="Variant.Outlined"/>
         </MudItem>
         <MudItem xs="12" md="4">
@@ -37,20 +33,27 @@
                        StartIcon="@Icons.Material.Filled.PostAdd"
                        Disabled="_loading"
                        @onclick="GenerateTimesheet">
-                @_generateButtonText
+                @if (_hasBeenGenerated)
+                {
+                    <MudText>Regenerate</MudText>
+                }
+                else
+                {
+                    <MudText>Generate</MudText>
+                }
             </MudButton>
         </MudItem>
-        
-        @if (additionalNotesError)
+
+        @if (_additionalNotesError)
         {
             <MudAlert Severity="Severity.Error">Additional notes too long. You have @_additionalNotes.Length characters. We only accept 400 max.</MudAlert>
         }
-        
+
         <MudExpansionPanel Text="Additional notes">
             <MudItem xs="12">
                 <MudTextField @bind-Value="_additionalNotes"
                               Variant="Variant.Outlined"
-                              Placeholder="I walked the dog for Adam..." 
+                              Placeholder="I walked the dog for Adam..."
                               Lines="7"/>
             </MudItem>
         </MudExpansionPanel>
@@ -67,24 +70,36 @@
     {
 
         <MudGrid Justify="Justify.SpaceBetween">
-            @if (_emailSubjects is not null && _emailSubjects?.Count > 1 && !_loading)
+            @if (_hasBeenGenerated && !_loading)
             {
-                <MudItem xs="12" md="6">
-                    <ResultCard Heading="Emails sent">
-                        <ul>
-                            @foreach (var subject in _emailSubjects.Where(m => !string.IsNullOrEmpty(m)))
-                            {
-                                <li><MudText>@subject</MudText></li>
-                            }
-                        </ul>
-                    </ResultCard>
-                </MudItem>
+                @if (_emailSubjects is not null && _emailSubjects?.Count > 1)
+                {
+                    <MudItem xs="12" md="6">
+                        <ResultCard Heading="Emails sent">
+                            <ul>
+                                @foreach (var email in _emailSubjects.Where(m => !string.IsNullOrEmpty(m.Subject)))
+                                {
+                                    <li>
+                                        <MudText>@email.Subject</MudText>
+                                    </li>
+                                }
+                            </ul>
+                        </ResultCard>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem>
+                        <MudText>No emails</MudText>
+                    </MudItem>
+                }
             }
 
             @if (!_loading && _meetings != null)
             {
                 var meetingsMiddleBreak = "12";
-                if (_emailSubjects is not null && _emailSubjects?.Count > 1 && !_loading)
+
+                if (_meetings is not null && _meetings?.Count > 1 && !_loading)
                 {
                     meetingsMiddleBreak = "6";
                 }
@@ -123,24 +138,23 @@
                 </MudItem>
             }
         </MudGrid>
-    }                
+    }
 </MudContainer>
-
 
 @code {
     bool _loading;
-    IList<string>? _emailSubjects;
+    IList<Email>? _emailSubjects;
     IList<Meeting>? _meetings;
     string? _summaryText;
     DateTime? _date = DateTime.Today;
     string? _name = "...";
     string? _extraPrompt;
     string _additionalNotes = string.Empty;
-    string _generateButtonText = "Generate";
+    bool _hasBeenGenerated;
 
-    bool additionalNotesError;
+    bool _additionalNotesError;
 
-    protected override async Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
         try
         {
@@ -158,9 +172,9 @@
         _loading = true;
         try
         {
-            additionalNotesError = false;
-            additionalNotesError = CheckAdditionalNotesIsntTooBig();
-            if (additionalNotesError)
+            _additionalNotesError = false;
+            _additionalNotesError = CheckAdditionalNotesLength();
+            if (_additionalNotesError)
             {
                 return;
             }
@@ -171,9 +185,9 @@
             _meetings = summary.Meetings;
             _summaryText = summary.Summary;
 
-            _generateButtonText = "Regenerate";
+            _hasBeenGenerated = true;
         }
-        catch (Exception ex) //TODO: straight from the template, but should be more specific?
+        catch (Exception ex)
         {
             ConsentHandler.HandleException(ex);
         }
@@ -181,10 +195,10 @@
         {
             _loading = false;
         }
-        
+
     }
-    
-    private bool CheckAdditionalNotesIsntTooBig()
+
+    private bool CheckAdditionalNotesLength()
     {
         return _additionalNotes.Length > 400;
     }

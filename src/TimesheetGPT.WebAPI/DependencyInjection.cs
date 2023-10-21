@@ -25,7 +25,7 @@ public static class DependencyInjection
             app.UseSwaggerUI();
         }
         
-        app.MapGetSubjects();
+        app.MapChat();
 
         return app;
     }

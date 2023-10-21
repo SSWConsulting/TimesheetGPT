@@ -1,4 +1,3 @@
-using System.Collections;
 using Microsoft.Graph;
 using TimesheetGPT.Core.Interfaces;
 using TimesheetGPT.Core.Models;
@@ -11,36 +10,24 @@ public class TimesheetService(IAiService aiService, GraphServiceClient graphServ
     {
         var graphService = new GraphService(graphServiceClient);
         
-        var emailSubjects = await graphService.GetEmailSubjects(date);
+        var emails = await graphService.GetSentEmails(date);
         var meetings = await graphService.GetMeetings(date);
         // var calls = await graphService.GetTeamsCalls(date);
         // TODO: SSW needs to allow the CallRecords.Read.All scope for this to work
         
-        var summary = await aiService.GetSummary(StringifyData(emailSubjects, meetings), extraPrompts, additionalNotes);
+        var summary = await aiService.GetSummaryBoring(emails, meetings, extraPrompts, additionalNotes);
         
         return new SummaryWithRaw
         {
-            Emails = emailSubjects,
+            Emails = emails,
             Meetings = meetings,
             Summary = summary,
             ModelUsed = "GPT-4" //TODO: get this from somewhere
         };
     }
-    
-    private string StringifyData(IEnumerable<string> emails, IList<Meeting> meetings)
+
+    public async Task<string?> ChatWithGraph(string ask)
     {
-        var result = "Sent emails (subject) \n";
-        foreach (var email in emails)
-        {
-            result += email + "\n";
-        }
-        result += "\n Calendar Events (name - length) \n";
-        
-        foreach (var meeting in meetings)
-        {
-            result += $"{meeting.Name} - {meeting.Length} \n";
-        }
-        
-        return result;
+        return await aiService.ChatWithGraphApi(ask);
     }
 }

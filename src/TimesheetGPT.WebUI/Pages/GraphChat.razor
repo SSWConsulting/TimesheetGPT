@@ -1,0 +1,112 @@
+@page "/chat"
+
+@inject GraphServiceClient GraphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+@inject TimesheetService TimesheetService
+
+<MudContainer MaxWidth="MaxWidth.Medium" Style="padding-bottom: 2rem;">
+    <MudText Typo="Typo.h1">Chat with GraphAPI</MudText>
+    <MudText Typo="Typo.subtitle1">
+        Hi @_name, ask questions about sent emails, meetings attended, and more.
+    </MudText>
+    <MudCard>
+        <MudCardContent>
+            @foreach (var message in _messages)
+            {
+                <div class="chat-bubble @(message.Sender == Sender.User ? "user" : "")">@message.MessageText</div>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            <MudTextField @bind-Value="@_userInput" Placeholder="Type your message..." FullWidth Variant="Variant.Filled"/>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SendMessage">Send</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+<style>
+    .chat-bubble {
+        padding: 10px;
+        margin: 5px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+    }
+    
+    .chat-bubble.user {
+        background-color: #ddd;
+        text-align: right;
+    }
+</style>
+
+@code {
+
+    private class Message
+    {
+        public int MessageId { get; set; }
+        public string MessageText { get; set; }
+        public Sender Sender { get; set; }
+    }
+
+    private enum Sender
+    {
+        User,
+        Bot
+    }
+
+    string? _name = "...";
+    string? _userInput;
+    IList<Message> _messages = new List<Message>();
+    int _messageCount;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _messages.Add(new Message
+        {
+            MessageText = "Hello, I'm the bot. How can I help you?",
+            Sender = Sender.Bot
+        });
+        try
+        {
+            var user = await GraphServiceClient.Me.GetAsync();
+            _name = user?.DisplayName;
+        }
+        catch (Exception ex)
+        {
+            ConsentHandler.HandleException(ex);
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        if (!string.IsNullOrEmpty(_userInput))
+        {
+            _messages.Add(new Message
+            {
+                MessageId = _messageCount++,
+                MessageText = _userInput,
+                Sender = Sender.User
+            });
+
+            _userInput = string.Empty;
+
+            var loadingMessage = new Message
+            {
+                MessageId = _messageCount++,
+                MessageText = "Thinking...",
+                Sender = Sender.Bot
+            };
+            _messages.Add(loadingMessage);
+            try
+            {
+                var response = await TimesheetService.ChatWithGraph(_userInput);
+
+                loadingMessage.MessageText = response ?? "⚠️ error";
+            }
+            catch (Exception e)
+            {
+                loadingMessage.MessageText = "⚠️ error";
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
+}

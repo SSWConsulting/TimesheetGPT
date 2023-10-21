@@ -18,7 +18,7 @@ public class GraphService : IGraphService
     }
 
 
-    public async Task<List<string>> GetEmailSubjects(DateTime date)
+    public async Task<List<Email>> GetSentEmails(DateTime date)
     {
         var nextDay = date.AddDays(1);
         var dateUtc = date.ToUniversalTime();
@@ -29,20 +29,25 @@ public class GraphService : IGraphService
             {
                 rc.QueryParameters.Top = 999;
                 rc.QueryParameters.Select =
-                    new[] { "subject" };
+                    new[] { "subject", "bodyPreview", "toRecipients", "id" };
                 rc.QueryParameters.Filter =
                     $"sentDateTime ge {dateUtc:yyyy-MM-ddTHH:mm:ssZ} and sentDateTime lt {nextDayUtc:yyyy-MM-ddTHH:mm:ssZ}";
                 rc.QueryParameters.Orderby = new[] { "sentDateTime asc" };
 
             });
 
-
         if (messages is { Value.Count: > 1 })
         {
-            return messages.Value.Select(m => m.Subject).ToList();
+            return new List<Email>(messages.Value.Select(m => new Email
+            {
+                Subject = m.Subject,
+                Body = m.BodyPreview,
+                To = string.Join(", ", m.ToRecipients.Select(r => r.EmailAddress.Name).ToList()),
+                Id = m.Id
+            }));
         }
 
-        return new List<string>(); //slack
+        return new List<Email>(); //slack
     }
 
 
@@ -105,6 +110,27 @@ public class GraphService : IGraphService
         }
 
         return new List<TeamsCall>();
+    }
+
+    public async Task<Email> GetEmailBody(string id)
+    {
+        var message = await _client.Me.Messages[id]
+            .GetAsync(rc =>
+            {
+                rc.QueryParameters.Select =
+                    new[] { "bodyPreview", "toRecipients" };
+            });
+
+        if (message != null)
+        {
+            return new Email
+            {
+                Body = message.BodyPreview,
+                To = string.Join(", ", message.ToRecipients.Select(r => r.EmailAddress.Name).ToList())
+            };
+        }
+
+        return new Email(); //slack
     }
 }
 
