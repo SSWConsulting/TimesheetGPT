@@ -1,5 +1,6 @@
 ﻿@page "/date-range"
-@using TimesheetGPT.WebUI.Components
+@using TimesheetGPT.WebUI.Models
+
 
 @inject GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
@@ -69,7 +70,7 @@
     string _additionalNotes = string.Empty;
     bool _hasBeenGenerated;
 
-    private readonly IList<Results.ResultVM> _results = new List<Results.ResultVM>();
+    private readonly IList<ResultVm> _results = new List<ResultVm>();
 
     private DateRange _dateRange = new(
         DateTime.Now.Date.AddDays(-(int)DateTime.Now.DayOfWeek + (int)DayOfWeek.Monday),
@@ -104,19 +105,24 @@
                 return;
             }
 
-            foreach (var date in EachDay(_dateRange.Start ?? DateTime.Now, _dateRange.End ?? DateTime.Now))
+            await Parallel.ForEachAsync(EachDay(_dateRange.Start ?? DateTime.Now, _dateRange.End ?? DateTime.Now), async (date, token) =>
             {
-                var summary = await TimesheetService.GenerateSummary(date, _extraPrompt ?? "", _additionalNotes);
-
-                _results.Add(new()
+                var result = new ResultVm
                 {
-                    EmailSubjects = summary.Emails,
-                    Meetings = summary.Meetings,
-                    SummaryText = summary.Summary
-                });
+                    Loading = true
+                };
+                
+                _results.Add(result);
+                
+                var summary = await TimesheetService.GenerateSummary(date, _extraPrompt ?? "", _additionalNotes, token);
+
+                result.Meetings = summary.Meetings;
+                result.Emails = summary.Emails;
+                result.SummaryText = summary.Text;
+                result.Loading = false;
 
                 _hasBeenGenerated = true;
-            }
+            });
         }
         catch (Exception ex)
         {

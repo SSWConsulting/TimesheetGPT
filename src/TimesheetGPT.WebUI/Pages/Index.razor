@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using TimesheetGPT.WebUI.Models
 
 @inject GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
@@ -59,98 +60,17 @@
         </MudExpansionPanel>
     </MudGrid>
 </MudContainer>
-<MudContainer MaxWidth="MaxWidth.Medium">
-    @if (_loading)
-    {
-        <MudStack AlignItems="AlignItems.Center">
-            <MudProgressCircular Size="Size.Large" Color="Color.Secondary" Indeterminate="true" Class="ma-2"/>
-        </MudStack>
-    }
-    else
-    {
 
-        <MudGrid Justify="Justify.SpaceBetween">
-            @if (_hasBeenGenerated && !_loading)
-            {
-                @if (_emailSubjects is not null && _emailSubjects?.Count > 1)
-                {
-                    <MudItem xs="12" md="6">
-                        <ResultCard Heading="Emails sent">
-                            <ul>
-                                @foreach (var email in _emailSubjects.Where(m => !string.IsNullOrEmpty(m.Subject)))
-                                {
-                                    <li>
-                                        <MudText>@email.Subject</MudText>
-                                    </li>
-                                }
-                            </ul>
-                        </ResultCard>
-                    </MudItem>
-                }
-                else
-                {
-                    <MudItem>
-                        <MudText>No emails</MudText>
-                    </MudItem>
-                }
-            }
-
-            @if (!_loading && _meetings != null)
-            {
-                var meetingsMiddleBreak = "12";
-
-                if (_meetings is not null && _meetings?.Count > 1 && !_loading)
-                {
-                    meetingsMiddleBreak = "6";
-                }
-                <MudItem xs="12" md="@(int.Parse(meetingsMiddleBreak))">
-                    <ResultCard Heading="Meetings">
-                        <ul>
-                            @foreach (var meeting in _meetings)
-                            {
-                                string formatted;
-
-                                var timeSpan = meeting.Length;
-                                if (timeSpan.Hours > 0)
-                                {
-                                    formatted = $"{timeSpan.Hours} hours {timeSpan.Minutes} minutes";
-                                }
-                                else
-                                {
-                                    formatted = $"{timeSpan.Minutes} minutes";
-                                }
-
-                                <MudText Typo="Typo.body2">@meeting.Name</MudText>
-                                <MudText Typo="Typo.body1">@formatted</MudText>
-                            }
-                        </ul>
-                    </ResultCard>
-                </MudItem>
-            }
-
-            @if (!_loading && _summaryText != null)
-            {
-                <MudItem xs="12">
-                    <ResultCard Heading="Summary" HasCopyButton="true" CopyText="@_summaryText">
-                        <MudText Typo="Typo.body1"></MudText>
-                        <MudMarkdown Value="@_summaryText"/>
-                    </ResultCard>
-                </MudItem>
-            }
-        </MudGrid>
-    }
-</MudContainer>
+<Results ViewModel="@_results" />
 
 @code {
     bool _loading;
-    IList<Email>? _emailSubjects;
-    IList<Meeting>? _meetings;
-    string? _summaryText;
     DateTime? _date = DateTime.Today;
     string? _name = "...";
     string? _extraPrompt;
     string _additionalNotes = string.Empty;
     bool _hasBeenGenerated;
+    ResultVm _results = new ResultVm();
 
     bool _additionalNotesError;
 
@@ -179,11 +99,17 @@
                 return;
             }
             var dateTime = _date ?? DateTime.Today;
+            
+            _results = new ResultVm
+            {
+                Loading = _loading,
+            };
+            
             var summary = await TimesheetService.GenerateSummary(dateTime, _extraPrompt ?? "", _additionalNotes);
 
-            _emailSubjects = summary.Emails;
-            _meetings = summary.Meetings;
-            _summaryText = summary.Summary;
+            _results.Meetings = summary.Meetings;
+            _results.Emails = summary.Emails;
+            _results.SummaryText = summary.Text;
 
             _hasBeenGenerated = true;
         }

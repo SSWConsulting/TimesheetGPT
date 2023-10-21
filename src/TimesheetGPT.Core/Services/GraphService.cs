@@ -18,7 +18,7 @@ public class GraphService : IGraphService
     }
 
 
-    public async Task<List<Email>> GetSentEmails(DateTime date)
+    public async Task<List<Email>> GetSentEmails(DateTime date, CancellationToken cancellationToken)
     {
         var nextDay = date.AddDays(1);
         var dateUtc = date.ToUniversalTime();
@@ -34,7 +34,7 @@ public class GraphService : IGraphService
                     $"sentDateTime ge {dateUtc:yyyy-MM-ddTHH:mm:ssZ} and sentDateTime lt {nextDayUtc:yyyy-MM-ddTHH:mm:ssZ}";
                 rc.QueryParameters.Orderby = new[] { "sentDateTime asc" };
 
-            });
+            }, cancellationToken);
 
         if (messages is { Value.Count: > 1 })
         {
@@ -51,7 +51,7 @@ public class GraphService : IGraphService
     }
 
 
-    public async Task<List<Meeting>> GetMeetings(DateTime date)
+    public async Task<List<Meeting>> GetMeetings(DateTime date, CancellationToken cancellationToken)
     {
         var nextDay = date.AddDays(1);
         var dateUtc = date.ToUniversalTime();
@@ -64,7 +64,7 @@ public class GraphService : IGraphService
             rc.QueryParameters.EndDateTime = nextDayUtc.ToString("o");
             rc.QueryParameters.Orderby = new[] { "start/dateTime" };
             rc.QueryParameters.Select = new[] { "subject", "start", "end", "occurrenceId" };
-        });
+        }, cancellationToken);
 
         if (meetings is { Value.Count: > 1 })
         {

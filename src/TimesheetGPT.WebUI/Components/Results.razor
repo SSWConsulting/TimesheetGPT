@@ -1,3 +1,4 @@
+@using TimesheetGPT.WebUI.Models
 <MudContainer MaxWidth="MaxWidth.Medium">
     @if (ViewModel.Loading)
     {
@@ -11,12 +12,12 @@
         <MudGrid Justify="Justify.SpaceBetween">
             @if (!ViewModel.Loading)
             {
-                @if (ViewModel.EmailSubjects is not null && ViewModel.EmailSubjects?.Count > 1)
+                @if (ViewModel.Emails is not null && ViewModel.Emails?.Count > 1)
                 {
                     <MudItem xs="12" md="6">
                         <ResultCard Heading="Emails sent">
                             <ul>
-                                @foreach (var email in ViewModel.EmailSubjects.Where(m => !string.IsNullOrEmpty(m.Subject)))
+                                @foreach (var email in ViewModel.Emails.Where(m => !string.IsNullOrEmpty(m.Subject)))
                                 {
                                     <li>
                                         <MudText>@email.Subject</MudText>
@@ -24,12 +25,6 @@
                                 }
                             </ul>
                         </ResultCard>
-                    </MudItem>
-                }
-                else
-                {
-                    <MudItem>
-                        <MudText>No emails</MudText>
                     </MudItem>
                 }
             }
@@ -82,13 +77,5 @@
 
 @code {
     [Parameter]
-    public ResultVM ViewModel { get; set; } = new ();
-
-    public class ResultVM
-    {
-        public bool Loading { get; set; }
-        public IList<Email>? EmailSubjects { get; set; }
-        public IList<Meeting>? Meetings { get; set; }
-        public string? SummaryText { get; set; }
-    }
+    public ResultVm ViewModel { get; set; } = new ();
 }

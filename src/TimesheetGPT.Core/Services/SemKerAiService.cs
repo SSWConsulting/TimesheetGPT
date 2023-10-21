@@ -41,7 +41,7 @@ public class SemKerAiService : IAiService
         return res.GetValue<string>();
     }
     
-    public async Task<string> GetSummaryBoring(IList<Email> emails, IEnumerable<Meeting> meetings, string extraPrompts, string additionalNotes = "")
+    public async Task<string> GetSummaryBoring(IList<Email> emails, IEnumerable<Meeting> meetings, string extraPrompts, CancellationToken cancellationToken, string additionalNotes = "")
     {
         var builder = new KernelBuilder();
 
@@ -54,9 +54,6 @@ public class SemKerAiService : IAiService
 
         var generateTimesheetFunction = kernel.CreateSemanticFunction(PromptTemplates.SummarizeEmailsAndCalendar, PromptConfigs.SummarizeEmailsAndCalendar);
 
-        // Do a function that summarizes emails then puts that in context
-        // Then do a function that summarizes email summaries and calendar events
-
         var context = kernel.CreateNewContext();
 
         context.Variables.TryAdd(PromptVariables.Emails, StringifyEmails(emails));
@@ -64,7 +61,7 @@ public class SemKerAiService : IAiService
         context.Variables.TryAdd(PromptVariables.AdditionalNotes, additionalNotes);
         context.Variables.TryAdd(PromptVariables.ExtraPrompts, extraPrompts);
 
-        await generateTimesheetFunction.InvokeAsync(context);
+        await generateTimesheetFunction.InvokeAsync(context, cancellationToken: cancellationToken);
 
         return context.Result;
     }

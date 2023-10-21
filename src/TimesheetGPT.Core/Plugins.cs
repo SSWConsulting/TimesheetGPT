@@ -18,7 +18,7 @@ public class GraphPlugins(IGraphService graphService)
     [SKFunction, Description("Get sent emails")]
     public async Task<string> GetSentEmails(DateTime dateTime)
     {
-        var emails = await graphService.GetSentEmails(dateTime);
+        var emails = await graphService.GetSentEmails(dateTime, new CancellationToken());
         return JsonSerializer.Serialize(emails);
         
     }
@@ -26,7 +26,7 @@ public class GraphPlugins(IGraphService graphService)
     [SKFunction, Description("Get meetings for a date")]
     public async Task<string> GetMeetings(DateTime dateTime)
     {
-        var meetings = await graphService.GetMeetings(dateTime);
+        var meetings = await graphService.GetMeetings(dateTime, new CancellationToken());
         return JsonSerializer.Serialize(meetings);
         
     }
