@@ -90,6 +90,7 @@
     private async Task GenerateTimesheet()
     {
         _loading = true;
+        _results.Loading = true;
         try
         {
             _additionalNotesError = false;
@@ -119,6 +120,7 @@
         }
         finally
         {
+            _results.Loading = false;
             _loading = false;
         }
 

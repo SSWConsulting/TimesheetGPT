@@ -142,7 +142,7 @@
 
     static IEnumerable<DateTime> EachDay(DateTime start, DateTime end)
     {
-        for (DateTime day = start; day <= end; day = day.AddDays(1))
+        for (var day = start; day <= end; day = day.AddDays(1))
         {
             yield return day;
         }

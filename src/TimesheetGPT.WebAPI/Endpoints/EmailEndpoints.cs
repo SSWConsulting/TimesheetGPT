@@ -6,7 +6,7 @@ namespace TimesheetGPT.WebAPI.Endpoints;
 public static class EmailEndpoints
 {
     public static void MapChat(this IEndpointRouteBuilder app) =>
-        app.MapGet("/chat", async (string ask) =>
+        app.MapGet("/api/chat", async (string ask) =>
             {
 
             })

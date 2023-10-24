@@ -13,7 +13,9 @@
         <MudCardContent>
             @foreach (var message in _messages)
             {
-                <div class="chat-bubble @(message.Sender == Sender.User ? "user" : "")">@message.MessageText</div>
+                <div class="chat-bubble @(message.Sender == Sender.User ? "user" : "")">
+                    <MudMarkdown Value="@message.MessageText"/>
+                </div>
             }
         </MudCardContent>
         <MudCardActions>
@@ -54,7 +56,7 @@
 
     string? _name = "...";
     string? _userInput;
-    IList<Message> _messages = new List<Message>();
+    readonly IList<Message> _messages = new List<Message>();
     int _messageCount;
 
     protected async override Task OnInitializedAsync()
@@ -79,14 +81,14 @@
     {
         if (!string.IsNullOrEmpty(_userInput))
         {
+            var ask = _userInput;
+            _userInput = string.Empty;
             _messages.Add(new Message
             {
                 MessageId = _messageCount++,
-                MessageText = _userInput,
+                MessageText = ask,
                 Sender = Sender.User
             });
-
-            _userInput = string.Empty;
 
             var loadingMessage = new Message
             {
@@ -97,8 +99,7 @@
             _messages.Add(loadingMessage);
             try
             {
-                var response = await TimesheetService.ChatWithGraph(_userInput);
-
+                var response = await TimesheetService.ChatWithGraph(ask);
                 loadingMessage.MessageText = response ?? "⚠️ error";
             }
             catch (Exception e)
