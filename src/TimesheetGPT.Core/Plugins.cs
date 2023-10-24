@@ -10,7 +10,7 @@ namespace TimesheetGPT.Core;
 public class GraphPlugins(IGraphService graphService)
 {
     [SKFunction, Description("Get email body from Id")]
-    public async Task<string> GetEmailBody(string id)
+    public async Task<string?> GetEmailBody(string id)
     {
         return (await graphService.GetEmailBody(id)).Body;
     }

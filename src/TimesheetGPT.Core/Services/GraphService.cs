@@ -41,8 +41,8 @@ public class GraphService : IGraphService
             return new List<Email>(messages.Value.Select(m => new Email
             {
                 Subject = m.Subject,
-                Body = m.BodyPreview,
-                To = string.Join(", ", m.ToRecipients.Select(r => r.EmailAddress.Name).ToList()),
+                Body = m.BodyPreview ?? "",
+                To = string.Join(", ", m.ToRecipients?.Select(r => r.EmailAddress?.Name).ToList() ?? new List<string?>()),
                 Id = m.Id
             }));
         }
@@ -70,8 +70,8 @@ public class GraphService : IGraphService
         {
             return meetings.Value.Select(m => new Meeting
             {
-                Name = m.Subject,
-                Length = DateTime.Parse(m.End.DateTime) - DateTime.Parse(m.Start.DateTime),
+                Name = m.Subject ?? "",
+                Length = DateTime.Parse(m.End?.DateTime ?? string.Empty) - DateTime.Parse(m.Start?.DateTime ?? string.Empty),
                 Repeating = m.Type == EventType.Occurrence,
                 // Sender = m.EmailAddress.Address TODO: Why is Organizer and attendees null? permissions?
             }).ToList();
@@ -99,7 +99,7 @@ public class GraphService : IGraphService
             {
                 return calls.Value.Select(m => new TeamsCall
                 {
-                    Attendees = m.Participants.Select(p => p.User.DisplayName).ToList(),
+                    Attendees = m.Participants?.Select(p => p.User?.DisplayName).ToList() ?? new List<string?>(),
                     Length = m.EndDateTime - m.StartDateTime ?? TimeSpan.Zero,
                 }).ToList();
             }
@@ -126,7 +126,7 @@ public class GraphService : IGraphService
             return new Email
             {
                 Body = message.BodyPreview,
-                To = string.Join(", ", message.ToRecipients.Select(r => r.EmailAddress.Name).ToList())
+                To = string.Join(", ", (message.ToRecipients ?? new List<Recipient>()).Select(r => r.EmailAddress?.Name).ToList())
             };
         }
 
@@ -136,6 +136,6 @@ public class GraphService : IGraphService
 
 public class TeamsCall
 {
-    public List<string> Attendees { get; set; }
+    public List<string?>? Attendees { get; set; }
     public TimeSpan Length { get; set; }
 }
