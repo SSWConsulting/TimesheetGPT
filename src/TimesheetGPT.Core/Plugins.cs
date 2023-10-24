@@ -12,7 +12,7 @@ public class GraphPlugins(IGraphService graphService)
     [SKFunction, Description("Get email body from Id")]
     public async Task<string?> GetEmailBody(string id)
     {
-        return (await graphService.GetEmailBody(id)).Body;
+        return (await graphService.GetEmailBody(id, new CancellationToken())).Body;
     }
     
     [SKFunction, Description("Get sent emails (subject, to, Id) for a date)")]
@@ -32,6 +32,7 @@ public class GraphPlugins(IGraphService graphService)
     [SKFunction, Description("Get todays date")]
     public string GetTodaysDate(DateTime dateTime)
     {
+        //TODO: Use browser datetime
         return DateTime.Today.ToString(CultureInfo.InvariantCulture);
         
     }

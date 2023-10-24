@@ -112,14 +112,14 @@ public class GraphService : IGraphService
         return new List<TeamsCall>();
     }
 
-    public async Task<Email> GetEmailBody(string id)
+    public async Task<Email> GetEmailBody(string id, CancellationToken ct)
     {
         var message = await _client.Me.Messages[id]
             .GetAsync(rc =>
             {
                 rc.QueryParameters.Select =
                     new[] { "bodyPreview", "toRecipients" };
-            });
+            }, ct);
 
         if (message != null)
         {

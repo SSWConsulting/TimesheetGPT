@@ -8,7 +8,7 @@ public static class PromptTemplates
                                                                 
                                                                 For meetings, follow the format 'Meeting Name - Meeting Length'
                                                                 Skip non-essential meetings like Daily Scrums.
-                                                                Treat all-day (or 9-hour) meetings as bookings. They indicate the client I worked for or, if tagged with 'SSW,' an internal focus day.
+                                                                Treat all-day (or 9-hour) meetings as bookings e.g. Brady was booked as the Bench Master.
                                                                 Use email subjects to figure out what tasks were completed.
                                                                 Note that emails starting with 'RE:' are replies, not new tasks.
                                                                 An email titled 'Sprint X Review' means I led that Sprint review/retro.

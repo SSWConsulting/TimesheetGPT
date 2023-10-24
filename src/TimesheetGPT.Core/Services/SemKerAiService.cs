@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planners;
+using System.Text;
 using TimesheetGPT.Core.Interfaces;
 using TimesheetGPT.Core.Models;
 
@@ -68,22 +69,27 @@ public class SemKerAiService : IAiService
 
     private static string StringifyMeetings(IEnumerable<Meeting> meetings)
     {
-        var result = "Calendar Events (name - length) \n";
+        var sb = new StringBuilder();
+        sb.AppendLine("Calendar Events (name - length)");
+
         foreach (var meeting in meetings)
         {
-            result += $"{meeting.Name} - {meeting.Length} \n";
+            sb.AppendLine($"{meeting.Name} - {meeting.Length}");
         }
 
-        return result;
+        return sb.ToString();
     }
+
     private static string StringifyEmails(IEnumerable<Email> emails)
     {
-        var result = "Sent emails (recipients - subject - bodyPreview) \n";
+        var sb = new StringBuilder();
+        sb.AppendLine("Sent emails (recipients - subject - bodyPreview)");
+
         foreach (var email in emails)
         {
-            result += $"{email.To} - {email.Subject} \n";
+            sb.AppendLine($"{email.To} - {email.Subject}");
         }
 
-        return result;
+        return sb.ToString();
     }
 }
