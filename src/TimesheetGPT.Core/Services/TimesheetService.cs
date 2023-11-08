@@ -6,7 +6,7 @@ namespace TimesheetGPT.Core.Services;
 
 public class TimesheetService(IAiService aiService, GraphServiceClient graphServiceClient)
 {
-    public async Task<SummaryWithRaw> GenerateSummary(DateTime date, string extraPrompts = "", string additionalNotes = "", CancellationToken ct = default)
+    public async Task<Summary> GenerateSummary(DateTime date, string extraPrompts = "", string additionalNotes = "", CancellationToken ct = default)
     {
         var graphService = new GraphService(graphServiceClient);
         
@@ -17,7 +17,7 @@ public class TimesheetService(IAiService aiService, GraphServiceClient graphServ
         
         var summary = await aiService.GetSummaryBoring(emails, meetings, extraPrompts, ct, additionalNotes);
         
-        return new SummaryWithRaw
+        return new Summary
         {
             Emails = emails,
             Meetings = meetings,
