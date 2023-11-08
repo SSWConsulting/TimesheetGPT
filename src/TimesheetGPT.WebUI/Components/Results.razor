@@ -1,0 +1,81 @@
+@using TimesheetGPT.WebUI.Models
+<MudContainer MaxWidth="MaxWidth.Medium">
+    @if (ViewModel.Loading)
+    {
+        <MudStack AlignItems="AlignItems.Center">
+            <MudProgressCircular Size="Size.Large" Color="Color.Secondary" Indeterminate="true" Class="ma-2"/>
+        </MudStack>
+    }
+    else
+    {
+
+        <MudGrid Justify="Justify.SpaceBetween">
+            @if (!ViewModel.Loading)
+            {
+                @if (ViewModel.Emails is not null && ViewModel.Emails?.Count > 1)
+                {
+                    <MudItem xs="12" md="6">
+                        <ResultCard Heading="Emails sent">
+                            <ul>
+                                @foreach (var email in ViewModel.Emails.Where(m => !string.IsNullOrEmpty(m.Subject)))
+                                {
+                                    <li>
+                                        <MudText>@email.Subject</MudText>
+                                    </li>
+                                }
+                            </ul>
+                        </ResultCard>
+                    </MudItem>
+                }
+            }
+
+            @if (!ViewModel.Loading && ViewModel.Meetings != null)
+            {
+                var meetingsMiddleBreak = "12";
+
+                if (ViewModel.Meetings is not null && ViewModel.Meetings?.Count > 1 && !ViewModel.Loading)
+                {
+                    meetingsMiddleBreak = "6";
+                }
+                <MudItem xs="12" md="@(int.Parse(meetingsMiddleBreak))">
+                    <ResultCard Heading="Meetings">
+                        <ul>
+                            @foreach (var meeting in ViewModel.Meetings)
+                            {
+                                string formatted;
+
+                                var timeSpan = meeting.Length;
+                                if (timeSpan.Hours > 0)
+                                {
+                                    formatted = $"{timeSpan.Hours} hours {timeSpan.Minutes} minutes";
+                                }
+                                else
+                                {
+                                    formatted = $"{timeSpan.Minutes} minutes";
+                                }
+
+                                <MudText Typo="Typo.body2">@meeting.Name</MudText>
+                                <MudText Typo="Typo.body1">@formatted</MudText>
+                            }
+                        </ul>
+                    </ResultCard>
+                </MudItem>
+            }
+
+            @if (!ViewModel.Loading && ViewModel.SummaryText != null)
+            {
+                <MudItem xs="12">
+                    <ResultCard Heading="Summary" HasCopyButton="true" CopyText="@ViewModel.SummaryText">
+                        <MudText Typo="Typo.body1"></MudText>
+                        <MudMarkdown Value="@ViewModel.SummaryText"/>
+                    </ResultCard>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public ResultVm ViewModel { get; set; } = new ();
+}

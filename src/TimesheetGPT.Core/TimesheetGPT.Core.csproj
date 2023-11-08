@@ -8,12 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Azure.Identity" Version="1.10.2" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0-rc.1.23419.4" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-rc.1.23419.4" />
-      <PackageReference Include="Microsoft.Graph" Version="5.28.0" />
-      <PackageReference Include="Microsoft.Identity.Client" Version="4.56.0" />
-      <PackageReference Include="Microsoft.SemanticKernel" Version="0.24.230918.1-preview" />
+      <PackageReference Include="Azure.Identity" Version="1.10.3" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0-rc.2.23479.6" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-rc.2.23479.6" />
+      <PackageReference Include="Microsoft.Graph" Version="5.34.0" />
+      <PackageReference Include="Microsoft.Identity.Client" Version="4.57.0" />
+      <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta5" />
+      <PackageReference Include="Microsoft.SemanticKernel.Plugins.MsGraph" Version="1.0.0-beta5" />
     </ItemGroup>
 
     <ItemGroup>

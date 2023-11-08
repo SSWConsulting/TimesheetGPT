@@ -1,4 +1,3 @@
-using System.Collections;
 using Microsoft.Graph;
 using TimesheetGPT.Core.Interfaces;
 using TimesheetGPT.Core.Models;
@@ -7,40 +6,28 @@ namespace TimesheetGPT.Core.Services;
 
 public class TimesheetService(IAiService aiService, GraphServiceClient graphServiceClient)
 {
-    public async Task<SummaryWithRaw> GenerateSummary(DateTime date, string extraPrompts = "", string additionalNotes = "")
+    public async Task<Summary> GenerateSummary(DateTime date, string extraPrompts = "", string additionalNotes = "", CancellationToken ct = default)
     {
         var graphService = new GraphService(graphServiceClient);
         
-        var emailSubjects = await graphService.GetEmailSubjects(date);
-        var meetings = await graphService.GetMeetings(date);
+        var emails = await graphService.GetSentEmails(date, ct);
+        var meetings = await graphService.GetMeetings(date, ct);
         // var calls = await graphService.GetTeamsCalls(date);
         // TODO: SSW needs to allow the CallRecords.Read.All scope for this to work
         
-        var summary = await aiService.GetSummary(StringifyData(emailSubjects, meetings), extraPrompts, additionalNotes);
+        var summary = await aiService.GetSummaryBoring(emails, meetings, extraPrompts, ct, additionalNotes);
         
-        return new SummaryWithRaw
+        return new Summary
         {
-            Emails = emailSubjects,
+            Emails = emails,
             Meetings = meetings,
-            Summary = summary,
+            Text = summary,
             ModelUsed = "GPT-4" //TODO: get this from somewhere
         };
     }
-    
-    private string StringifyData(IEnumerable<string> emails, IList<Meeting> meetings)
+
+    public async Task<string?> ChatWithGraph(string ask)
     {
-        var result = "Sent emails (subject) \n";
-        foreach (var email in emails)
-        {
-            result += email + "\n";
-        }
-        result += "\n Calendar Events (name - length) \n";
-        
-        foreach (var meeting in meetings)
-        {
-            result += $"{meeting.Name} - {meeting.Length} \n";
-        }
-        
-        return result;
+        return await aiService.ChatWithGraphApi(ask);
     }
 }

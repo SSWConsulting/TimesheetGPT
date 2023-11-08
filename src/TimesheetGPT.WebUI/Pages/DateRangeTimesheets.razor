@@ -1,5 +1,6 @@
-﻿@page "/"
+﻿@page "/date-range"
 @using TimesheetGPT.WebUI.Models
+
 
 @inject GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
@@ -8,16 +9,12 @@
 <MudContainer MaxWidth="MaxWidth.Medium" Style="padding-bottom: 2rem;">
     <MudText Typo="Typo.h1">Generate Timesheet</MudText>
     <MudText Typo="Typo.subtitle1">
-        Hi @_name, what day would you like to generate a timesheet for?
+        Hi @_name, what days would you like to generate a timesheet for?
     </MudText>
     <MudGrid Justify="Justify.SpaceBetween" Style="align-items: center">
         <MudItem xs="12" md="4">
-            <MudDatePicker Label="Timesheet day"
-                           @bind-Date="_date"
-                           DisableToolbar="true"
-                           Variant="Variant.Outlined"
-                           IsDateDisabledFunc="@((DateTime dt) => dt.Date > DateTime.Now.Date)"
-                           Editable="true"/>
+            <MudDateRangePicker Label="Basic range picker (editable)" Editable="true" @bind-DateRange="_dateRange"/>
+
         </MudItem>
         <MudItem xs="12" md="4">
             <MudTextField @bind-Value="_extraPrompt"
@@ -61,16 +58,25 @@
     </MudGrid>
 </MudContainer>
 
-<Results ViewModel="@_results" />
+@foreach (var res in _results)
+{
+    <Results ViewModel="@res"/>
+}
 
 @code {
     bool _loading;
-    DateTime? _date = DateTime.Today;
     string? _name = "...";
     string? _extraPrompt;
     string _additionalNotes = string.Empty;
     bool _hasBeenGenerated;
-    ResultVm _results = new ResultVm();
+
+    private readonly IList<ResultVm> _results = new List<ResultVm>();
+
+    private DateRange _dateRange = new(
+        DateTime.Now.Date.AddDays(-(int)DateTime.Now.DayOfWeek + (int)DayOfWeek.Monday),
+        DateTime.Now.Date.AddDays(-(int)DateTime.Now.DayOfWeek + (int)DayOfWeek.Friday)
+        );
+
 
     bool _additionalNotesError;
 
@@ -81,7 +87,7 @@
             var user = await GraphServiceClient.Me.GetAsync();
             _name = user?.DisplayName;
         }
-        catch (Exception ex) //TODO: straight from the template, but should be more specific?
+        catch (Exception ex)
         {
             ConsentHandler.HandleException(ex);
         }
@@ -90,7 +96,6 @@
     private async Task GenerateTimesheet()
     {
         _loading = true;
-        _results.Loading = true;
         try
         {
             _additionalNotesError = false;
@@ -99,20 +104,25 @@
             {
                 return;
             }
-            var dateTime = _date ?? DateTime.Today;
-            
-            _results = new ResultVm
+
+            await Parallel.ForEachAsync(EachDay(_dateRange.Start ?? DateTime.Now, _dateRange.End ?? DateTime.Now), async (date, token) =>
             {
-                Loading = _loading,
-            };
-            
-            var summary = await TimesheetService.GenerateSummary(dateTime, _extraPrompt ?? "", _additionalNotes);
+                var result = new ResultVm
+                {
+                    Loading = true
+                };
+                
+                _results.Add(result);
+                
+                var summary = await TimesheetService.GenerateSummary(date, _extraPrompt ?? "", _additionalNotes, token);
 
-            _results.Meetings = summary.Meetings;
-            _results.Emails = summary.Emails;
-            _results.SummaryText = summary.Text;
+                result.Meetings = summary.Meetings;
+                result.Emails = summary.Emails;
+                result.SummaryText = summary.Text;
+                result.Loading = false;
 
-            _hasBeenGenerated = true;
+                _hasBeenGenerated = true;
+            });
         }
         catch (Exception ex)
         {
@@ -120,7 +130,6 @@
         }
         finally
         {
-            _results.Loading = false;
             _loading = false;
         }
 
@@ -129,5 +138,13 @@
     private bool CheckAdditionalNotesLength()
     {
         return _additionalNotes.Length > 400;
+    }
+
+    static IEnumerable<DateTime> EachDay(DateTime start, DateTime end)
+    {
+        for (var day = start; day <= end; day = day.AddDays(1))
+        {
+            yield return day;
+        }
     }
 }

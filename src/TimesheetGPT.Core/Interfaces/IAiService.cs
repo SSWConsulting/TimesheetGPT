@@ -1,6 +1,9 @@
+using TimesheetGPT.Core.Models;
+
 namespace TimesheetGPT.Core.Interfaces;
 
 public interface IAiService
 {
-    public Task<string> GetSummary(string text, string extraPrompts, string additionalNotes);
+    public Task<string?> ChatWithGraphApi(string ask);
+    public Task<string> GetSummaryBoring(IList<Email> emails, IEnumerable<Meeting> meetings, string extraPrompts, CancellationToken cancellationToken, string additionalNotes = "");
 }
