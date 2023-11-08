@@ -25,7 +25,8 @@ public class SemKerAiService : IAiService
 
         builder.WithOpenAIChatCompletionService(
             // "gpt-3.5-turbo", // Cheap mode
-            "gpt-4", // 💸
+            // "gpt-4", // 💸
+            "gpt-4-1106-preview", // ⏩
             _apiKey);
 
         var kernel = builder.Build();
@@ -47,8 +48,7 @@ public class SemKerAiService : IAiService
         var builder = new KernelBuilder();
 
         builder.WithOpenAIChatCompletionService(
-            // "gpt-3.5-turbo", // Cheap mode
-            "gpt-4", // 💸
+            "gpt-4-1106-preview", // ⏩
             _apiKey);
 
         var kernel = builder.Build();
