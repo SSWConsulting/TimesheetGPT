@@ -16,7 +16,7 @@
             </MudStack>
         </MudText>
         <MudSpacer/>
-        @switch (themePreference)
+        @switch (_themePreference)
         {
             case ThemePreference.Light:
                 <MudTooltip Duration="1000" Text="Switch to Dark Theme">
@@ -52,15 +52,15 @@
 
 @code {
     private MudThemeProvider? _mudThemeProvider;
-    ThemePreference themePreference;
+    ThemePreference _themePreference;
     private bool _isDarkMode;
-    private bool systemIsDarkMode;
+    private bool _systemIsDarkMode;
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            systemIsDarkMode = await _mudThemeProvider.GetSystemPreference();
+            _systemIsDarkMode = await _mudThemeProvider.GetSystemPreference();
             await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
             StateHasChanged();
         }
@@ -68,8 +68,8 @@
 
     private async Task OnSystemPreferenceChanged(bool newValue)
     {
-        systemIsDarkMode = newValue;
-        SetThemePreference(themePreference);
+        _systemIsDarkMode = newValue;
+        SetThemePreference(_themePreference);
         StateHasChanged();
     }
 
@@ -111,15 +111,16 @@
         }
     };
 
+    
     private void SetThemePreference(ThemePreference preference)
     {
-        themePreference = preference;
+        _themePreference = preference;
 
         _isDarkMode = preference switch 
         {        
             ThemePreference.Light => false,
             ThemePreference.Dark => true,
-            ThemePreference.System => systemIsDarkMode,
+            ThemePreference.System => _systemIsDarkMode,
             _ => true
             };
 
