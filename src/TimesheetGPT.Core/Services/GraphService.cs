@@ -29,25 +29,29 @@ public class GraphService : IGraphService
             {
                 rc.QueryParameters.Top = 999;
                 rc.QueryParameters.Select =
-                    new[] { "subject", "bodyPreview", "toRecipients", "id" };
+                    ["subject", "bodyPreview", "toRecipients", "id"];
                 rc.QueryParameters.Filter =
                     $"sentDateTime ge {dateUtc:yyyy-MM-ddTHH:mm:ssZ} and sentDateTime lt {nextDayUtc:yyyy-MM-ddTHH:mm:ssZ}";
-                rc.QueryParameters.Orderby = new[] { "sentDateTime asc" };
+                rc.QueryParameters.Orderby = ["sentDateTime asc"];
 
             }, cancellationToken);
 
         if (messages is { Value.Count: > 1 })
         {
-            return new List<Email>(messages.Value.Select(m => new Email
-            {
-                Subject = m.Subject,
-                Body = m.BodyPreview ?? "",
-                To = string.Join(", ", m.ToRecipients?.Select(r => r.EmailAddress?.Name).ToList() ?? new List<string?>()),
-                Id = m.Id
-            }));
+            return
+            [
+                ..messages.Value.Select(m => new Email
+                {
+                    Subject = m.Subject,
+                    Body = m.BodyPreview ?? "",
+                    To = string.Join(", ",
+                        m.ToRecipients?.Select(r => r.EmailAddress?.Name).ToList() ?? []),
+                    Id = m.Id
+                })
+            ];
         }
 
-        return new List<Email>(); //slack
+        return []; //slack
     }
 
 
@@ -62,8 +66,8 @@ public class GraphService : IGraphService
             rc.QueryParameters.Top = 999;
             rc.QueryParameters.StartDateTime = dateUtc.ToString("o");
             rc.QueryParameters.EndDateTime = nextDayUtc.ToString("o");
-            rc.QueryParameters.Orderby = new[] { "start/dateTime" };
-            rc.QueryParameters.Select = new[] { "subject", "start", "end", "occurrenceId" };
+            rc.QueryParameters.Orderby = ["start/dateTime"];
+            rc.QueryParameters.Select = ["subject", "start", "end", "occurrenceId"];
         }, cancellationToken);
 
         if (meetings is { Value.Count: > 1 })
@@ -77,7 +81,7 @@ public class GraphService : IGraphService
             }).ToList();
         }
 
-        return new List<Meeting>(); //slack
+        return []; //slack
     }
     public async Task<List<TeamsCall>> GetTeamsCalls(DateTime date)
     {
@@ -90,8 +94,8 @@ public class GraphService : IGraphService
             var calls = await _client.Communications.CallRecords.GetAsync(rc =>
             {
                 rc.QueryParameters.Top = 999;
-                rc.QueryParameters.Orderby = new[] { "startDateTime" };
-                rc.QueryParameters.Select = new[] { "startDateTime", "endDateTime", "participants" };
+                rc.QueryParameters.Orderby = ["startDateTime"];
+                rc.QueryParameters.Select = ["startDateTime", "endDateTime", "participants"];
                 rc.QueryParameters.Filter = $"startDateTime ge {dateUtc:o} and endDateTime lt {nextDayUtc:o}";
             });
 
@@ -99,7 +103,7 @@ public class GraphService : IGraphService
             {
                 return calls.Value.Select(m => new TeamsCall
                 {
-                    Attendees = m.Participants?.Select(p => p.User?.DisplayName).ToList() ?? new List<string?>(),
+                    Attendees = m.Participants?.Select(p => p.User?.DisplayName).ToList() ?? [],
                     Length = m.EndDateTime - m.StartDateTime ?? TimeSpan.Zero,
                 }).ToList();
             }
@@ -109,7 +113,7 @@ public class GraphService : IGraphService
             throw new Exception("Need CallRecords.Read.All scopes", e);
         }
 
-        return new List<TeamsCall>();
+        return [];
     }
 
     public async Task<Email> GetEmailBody(string id, CancellationToken ct)
@@ -118,7 +122,7 @@ public class GraphService : IGraphService
             .GetAsync(rc =>
             {
                 rc.QueryParameters.Select =
-                    new[] { "bodyPreview", "toRecipients" };
+                    ["bodyPreview", "toRecipients"];
             }, ct);
 
         if (message != null)
@@ -126,7 +130,7 @@ public class GraphService : IGraphService
             return new Email
             {
                 Body = message.BodyPreview,
-                To = string.Join(", ", (message.ToRecipients ?? new List<Recipient>()).Select(r => r.EmailAddress?.Name).ToList())
+                To = string.Join(", ", (message.ToRecipients ?? []).Select(r => r.EmailAddress?.Name).ToList())
             };
         }
 

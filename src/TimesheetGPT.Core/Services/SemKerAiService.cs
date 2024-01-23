@@ -48,7 +48,8 @@ public class SemKerAiService : IAiService
         var builder = new KernelBuilder();
 
         builder.WithOpenAIChatCompletionService(
-            "gpt-4-1106-preview", // ⏩
+            // "gpt-4-1106-preview", // ⏩
+            "gpt-4", // 💸
             _apiKey);
 
         var kernel = builder.Build();
