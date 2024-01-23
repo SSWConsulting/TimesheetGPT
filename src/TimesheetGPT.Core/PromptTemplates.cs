@@ -4,7 +4,7 @@ public static class PromptTemplates
 {
     // Doesn't hot reload
     public static readonly string SummarizeEmailsAndCalendar = $"""
-                                                                Generate a concise timesheet summary in chronological order from my meetings and emails.
+                                                                Generate a concise timesheet summary in chronological order from my meetings and emails to submit to my employer.
                                                                 
                                                                 Skip non-essential meetings like Daily Scrums.
                                                                 Treat all-day (or 9-hour) meetings as bookings e.g. Brady was booked as the Bench Master.
