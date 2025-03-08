@@ -8,7 +8,9 @@ https://timesheet-gpt.azurewebsites.net/
 - 📝 Using all the summaries to make a timesheet
 
 ![](https://github.com/bradystroud/TimesheetGPT/assets/38869720/c953851f-b5f8-4f95-aed9-bcbcb21d1e3d)
-**Figure: **
+
+Check out the demo 🎥
+https://youtu.be/Hx-XWVZBRTE
 
 ## 🛠 Technical Stuff
 
