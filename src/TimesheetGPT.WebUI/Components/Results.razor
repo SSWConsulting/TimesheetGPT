@@ -4,6 +4,10 @@
     {
         <MudStack AlignItems="AlignItems.Center">
             <MudProgressCircular Size="Size.Large" Color="Color.Secondary" Indeterminate="true" Class="ma-2"/>
+            @if (!string.IsNullOrWhiteSpace(ViewModel.StatusMessage))
+            {
+                <MudText Typo="Typo.body2">@ViewModel.StatusMessage</MudText>
+            }
         </MudStack>
     }
     else
@@ -40,7 +44,7 @@
                 <MudItem xs="12" md="@(int.Parse(meetingsMiddleBreak))">
                     <ResultCard Heading="Meetings">
                         <ul>
-                            @foreach (var meeting in ViewModel.Meetings)
+                            @foreach (var meeting in ViewModel.Meetings!)
                             {
                                 string formatted;
 
@@ -70,12 +74,69 @@
                         <MudMarkdown Value="@ViewModel.SummaryText"/>
                     </ResultCard>
                 </MudItem>
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Send"
+                               OnClick="SubmitTimesheet"
+                               Disabled="_submitting"
+                               FullWidth="true">
+                        @if (_submitting)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2"/>
+                            <MudText>Submitting...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Submit Timesheet via MCP</MudText>
+                        }
+                    </MudButton>
+                    @if (_submitResult is not null)
+                    {
+                        <MudAlert Severity="@_submitSeverity" Class="mt-2">
+                            <MudMarkdown Value="@_submitResult"/>
+                        </MudAlert>
+                    }
+                </MudItem>
             }
         </MudGrid>
     }
 </MudContainer>
 
+@inject TimesheetService TimesheetService
+
 @code {
     [Parameter]
     public ResultVm ViewModel { get; set; } = new ();
+
+    [Parameter]
+    public DateTime Date { get; set; } = DateTime.Today;
+
+    private bool _submitting;
+    private string? _submitResult;
+    private Severity _submitSeverity = Severity.Success;
+
+    private async Task SubmitTimesheet()
+    {
+        if (ViewModel.SummaryText is null) return;
+
+        _submitting = true;
+        _submitResult = null;
+        StateHasChanged();
+
+        try
+        {
+            var result = await TimesheetService.SubmitTimesheet(ViewModel.SummaryText, Date);
+            _submitResult = result;
+            _submitSeverity = Severity.Success;
+        }
+        catch (Exception ex)
+        {
+            _submitResult = $"Failed to submit: {ex.Message}";
+            _submitSeverity = Severity.Error;
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
 }

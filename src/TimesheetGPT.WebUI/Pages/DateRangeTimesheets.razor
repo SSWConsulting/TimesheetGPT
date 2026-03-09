@@ -1,9 +1,10 @@
-﻿@page "/date-range"
+@page "/date-range"
+@attribute [Authorize]
+@using TimesheetGPT.Core.Interfaces
 @using TimesheetGPT.WebUI.Models
 
 
-@inject GraphServiceClient GraphServiceClient
-@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+@inject IUserProfileService UserProfileService
 @inject TimesheetService TimesheetService
 
 <MudContainer MaxWidth="MaxWidth.Medium" Style="padding-bottom: 2rem;">
@@ -60,7 +61,7 @@
 
 @foreach (var res in _results)
 {
-    <Results ViewModel="@res"/>
+    <Results ViewModel="@res" Date="@res.Date"/>
 }
 
 @code {
@@ -84,12 +85,11 @@
     {
         try
         {
-            var user = await GraphServiceClient.Me.GetAsync();
-            _name = user?.DisplayName;
+            _name = await UserProfileService.GetDisplayNameAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            ConsentHandler.HandleException(ex);
+            _name = "there";
         }
     }
 
@@ -105,28 +105,53 @@
                 return;
             }
 
-            await Parallel.ForEachAsync(EachDay(_dateRange.Start ?? DateTime.Now, _dateRange.End ?? DateTime.Now), async (date, token) =>
-            {
-                var result = new ResultVm
-                {
-                    Loading = true
-                };
-                
-                _results.Add(result);
-                
-                var summary = await TimesheetService.GenerateSummary(date, _extraPrompt ?? "", _additionalNotes, token);
+            _results.Clear();
 
+            foreach (var date in EachDay(_dateRange.Start ?? DateTime.Now, _dateRange.End ?? DateTime.Now))
+            {
+                _results.Add(new ResultVm
+                {
+                    Loading = true,
+                    Date = date,
+                    StatusMessage = $"Queued for {date:dddd, d MMM}"
+                });
+            }
+
+            var progress = new Progress<TimesheetGPT.Core.Models.Generation.GenerationProgressUpdate>(update =>
+            {
+                var result = _results.FirstOrDefault(x => x.Date.Date == update.Date.Date);
+                if (result is null)
+                {
+                    return;
+                }
+
+                result.Loading = update.Stage != "completed";
+                result.StatusMessage = update.Message;
+                InvokeAsync(StateHasChanged);
+            });
+
+            var summaries = await TimesheetService.GenerateRange(
+                _dateRange.Start ?? DateTime.Now,
+                _dateRange.End ?? DateTime.Now,
+                _extraPrompt ?? "",
+                _additionalNotes,
+                progress);
+
+            foreach (var summary in summaries)
+            {
+                var result = _results.First(x => x.Date.Date == summary.Date.Date);
                 result.Meetings = summary.Meetings;
                 result.Emails = summary.Emails;
                 result.SummaryText = summary.Text;
+                result.StatusMessage = $"Completed for {summary.Date:dddd, d MMM}";
                 result.Loading = false;
+            }
 
-                _hasBeenGenerated = true;
-            });
+            _hasBeenGenerated = true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            ConsentHandler.HandleException(ex);
+            // TODO: Better error handling
         }
         finally
         {

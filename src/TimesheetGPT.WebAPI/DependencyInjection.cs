@@ -13,6 +13,7 @@ public static class DependencyInjection
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddProblemDetails();
 
         return services;
     }
@@ -24,8 +25,10 @@ public static class DependencyInjection
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        
+
+        app.MapMeta();
         app.MapChat();
+        app.MapTimesheets();
 
         return app;
     }

@@ -1,16 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-
 namespace TimesheetGPT.WebAPI.Endpoints;
 
-public static class EmailEndpoints
-{
-    public static void MapChat(this IEndpointRouteBuilder app) =>
-        app.MapGet("/api/chat", async (string ask) =>
-            {
-
-            })
-            .WithName("GetEmailSubjects")
-            .WithOpenApi();
-
-}
+// Intentionally left as a shim to avoid accidental file-level conflicts while the
+// previous stub endpoint is replaced by ChatEndpoints/TimesheetEndpoints.
+internal static class EmailEndpoints;

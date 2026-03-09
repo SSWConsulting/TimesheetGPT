@@ -5,6 +5,8 @@ namespace TimesheetGPT.WebUI.Models;
 public class ResultVm
 {
     public bool Loading { get; set; }
+    public DateTime Date { get; set; } = DateTime.Today;
+    public string? StatusMessage { get; set; }
     public IList<Email>? Emails { get; set; }
     public IList<Meeting>? Meetings { get; set; }
     public string? SummaryText { get; set; }
